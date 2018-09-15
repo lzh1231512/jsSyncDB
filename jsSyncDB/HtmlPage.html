@@ -1,0 +1,120 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title></title>
+    <script src="javascript/jquery-1.8.0.min.js"></script>
+    <script src="javascript/DB/tools.js"></script>
+    <script src="javascript/DB/base/dbCache.js"></script>
+    <script src="javascript/DB/base/dbSqlite.js"></script>
+    <script src="javascript/DB/base/dbLocalStorage.js"></script>
+    <script src="javascript/DB/base/dbIndexedDB.js"></script>
+    <script src="javascript/DB/dbModel.js"></script>
+    <script src="javascript/DB/dbCore.js"></script>
+    <script src="javascript/DB/dbSync.js"></script>
+    <script src="javascript/DB/dbBase.js"></script>
+    <script src="javascript/UnitTest/dbCache.js"></script>
+    <!--<script src="javascript/UnitTest/dbIndexedDB.js"></script>-->
+    <!--<script src="javascript/UnitTest/tools.js"></script>-->
+    <!--<script src="javascript/UnitTest/dbBase.js"></script>-->
+    <script src="javascript/UnitTest/dbCore.js"></script>
+    <!--<script src="javascript/DB/test3.js"></script>-->
+    <script>
+        var obj = {};
+        obj['2'] = 123;
+        console.log(obj);
+    </script>
+    <script>
+        
+        jQuery(function () {
+            jQuery('#t2').click(function () {
+                var obj1 = new testObj(jQuery('#t1').val(), 2);
+                mySyncDB.writeObj(obj1, function () {
+                });
+               // mySyncDB.sync();
+            });
+            jQuery('#Button1').click(function () {
+                mySyncDB.dbReadObj(jQuery('#t3').val(), function (obj) {
+                    obj.a = jQuery('#t1').val();
+                    mySyncDB.writeObj(obj, function () {
+
+                    });
+                });
+            });
+            jQuery('#Button2').click(function () {
+                //mySyncDB.sync();
+                // mySyncDB.sync();
+                mySyncDB.dbReadObj(jQuery('#t3').val(), function (objs) {
+                    console.log(objs);
+                    mySyncDB.dbRead('test', function (objs) {
+                        var xx = [];
+                        var xx2 = [];
+                        for (var i = 0; i < objs.length; i++) {
+                            if (objs[i].a) {
+                                xx.push(objs[i]);
+                            } else {
+                                xx2.push(objs[i]);
+                            }
+                        }
+                        console.log(xx);
+                        console.log(xx2);
+                    });
+                });
+            });
+            jQuery('#Button3').click(function () {
+                var obj1 = new testObj(111, 2);
+                var obj2 = new testObj(222, 2);
+                mySyncDB.writeObj(obj1, function () {
+                    mySyncDB.writeObj(obj2, function () {
+                        mySyncDB.dbRead('test', function (objs) {
+                            console.log(objs);
+                            mySyncDB.deleteObj(obj2, function () {
+                                mySyncDB.dbRead('test', function (objs) {
+                                    console.log(objs);
+                                });
+                            });
+                        });
+                    });
+                });
+
+            });
+            jQuery('#Button4').click(function () {
+                var obj1 = new testObj(111, 2);
+                var obj2 = new testObj(222, 2);
+                mySyncDB.readMainIndex(1, function (objs) {
+                    console.log(objs);
+                });
+
+            });
+            jQuery('#Button5').click(function () {
+                //var mySyncDB = new MySyncDB('testuser', 'testdb1', 'http://localhost:8080/BookMarksSync');
+                //mySyncDB.sync(function () {
+                //});
+                mySyncDB.dbRead('mainSync', [['uuid', 'in', [5, 6, 33, 244, 751]], ['objuuid', 'in', ['wYLAeS3CYXRFgC7AwABOnC', 'gMfA09TAAINKHZXC3tTAIB']]], function (objs) {
+                    var xx = [];
+                    var xx2 = [];
+                    for (var i = 0; i < objs.length; i++) {
+                        if (objs[i].data) {
+                            xx.push(objs[i]);
+                        } else {
+                            xx2.push(objs[i]);
+                        }
+                    }
+                    console.log(xx);
+                    console.log(xx2);
+                });
+            });
+        });
+    </script>
+</head>
+<body>
+    <input id="t1" type="text" name="name" value="" />
+    <input id="t3" type="text" name="name" value="" />
+    <input id="t2" type="button" name="name" value="test" />
+     <input id="Button1" type="button" name="name" value="test2" />
+    <input id="Button2" type="button" name="name" value="test3" />
+    <input id="Button3" type="button" name="name" value="test4" />
+    <input id="Button4" type="button" name="name" value="test5" />
+    <input id="Button5" type="button" name="name" value="test6" />
+</body>
+</html>
