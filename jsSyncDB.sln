@@ -1,0 +1,41 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.27130.2010
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "jsSyncDB", "jsSyncDB\", "{73A6F84D-CA50-4790-BE33-710BB4AF7105}"
+	ProjectSection(WebsiteProperties) = preProject
+		TargetFrameworkMoniker = ".NETFramework,Version%3Dv4.5"
+		Debug.AspNetCompiler.VirtualPath = "/localhost_59852"
+		Debug.AspNetCompiler.PhysicalPath = "jsSyncDB\"
+		Debug.AspNetCompiler.TargetPath = "PrecompiledWeb\localhost_59852\"
+		Debug.AspNetCompiler.Updateable = "true"
+		Debug.AspNetCompiler.ForceOverwrite = "true"
+		Debug.AspNetCompiler.FixedNames = "false"
+		Debug.AspNetCompiler.Debug = "True"
+		Release.AspNetCompiler.VirtualPath = "/localhost_59852"
+		Release.AspNetCompiler.PhysicalPath = "jsSyncDB\"
+		Release.AspNetCompiler.TargetPath = "PrecompiledWeb\localhost_59852\"
+		Release.AspNetCompiler.Updateable = "true"
+		Release.AspNetCompiler.ForceOverwrite = "true"
+		Release.AspNetCompiler.FixedNames = "false"
+		Release.AspNetCompiler.Debug = "False"
+		VWDPort = "59852"
+		SlnRelativePath = "jsSyncDB\"
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{73A6F84D-CA50-4790-BE33-710BB4AF7105}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{73A6F84D-CA50-4790-BE33-710BB4AF7105}.Debug|Any CPU.Build.0 = Debug|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {86DC4FFC-5D4C-4CC7-864F-24AB9A6435E6}
+	EndGlobalSection
+EndGlobal
