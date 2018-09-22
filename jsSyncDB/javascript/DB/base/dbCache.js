@@ -1,5 +1,14 @@
-﻿/// <reference path="../tools.js" />
-function dbCache(limit) {
+﻿var JssDB = JssDB || {};
+JssDB.dbCache = function dbCache(limit) {
+    var uuid = JssDB.tools.uuid;
+    var clone = JssDB.tools.clone;
+    var arrayExtend = JssDB.tools.arrayExtend;
+    var _check = JssDB.tools._check;
+    var _log = JssDB.tools._log;
+    var isArray = JssDB.tools.isArray;
+    var timepiece = JssDB.tools.timepiece;
+    var ExecQueue = JssDB.tools.ExecQueue;
+
     this.limit = limit;
     var theCache = {}
     var theCacheCheck = {}

@@ -1,5 +1,39 @@
 ﻿/// <reference path="dbSync.js" />
-var mySyncDB = new MySyncDB('testuser', 'testdb1', 'http://localhost:8080/BookMarksSync');
+var mySyncDB = new JssDB('testuser', 'testdb3', 'https://lzhsb.cc');
+
+function testObj(a, b) {
+    this._temp = JssDB._dbObj;
+    this._temp(JssDB.tools.uuid(), "test");
+    this.a = a;
+    this.b = b;
+    var dt = new Date(2017, 5, 13, 20, 0, 0);
+    this.c = (new Date()).getTime() - dt.getTime();
+    return this;
+}
+JssDB.dbModelIndex['test'] = "c";//order by c
+JssDB.dbModelColumn['test'] = ['a', 'b', 'c'];
+JssDB.dbModelIndexType['test'] = "int";
+JssDB.dbModelTransformation['test'] = {
+    viewModelToEntity: function (obj) {
+        return obj.a + ',' + obj.b + ',' + obj.c;
+    },
+    entityToViewModel: function (res) {
+        var info = res.split(',');
+        return {
+            a: info[0],
+            b: info[1],
+            c: parseInt(info[2])
+        };
+    }
+}
+JssDB.dbModelEvent['test'] = {
+    onSave: function (theOld, thenew) {
+
+    }, onDelete: function (theOld) {
+
+    }
+}
+
 var test = JSON.stringify(null);
 var test2 = JSON.parse(test);
 mySyncDB.clear(function () {
