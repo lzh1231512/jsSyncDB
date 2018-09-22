@@ -9,6 +9,12 @@ JssDB.dbCode = JssDB.dbCode || (function () {
     var timepiece = JssDB.tools.timepiece;
     var ExecQueue = JssDB.tools.ExecQueue;
 
+    var dbModelIndex = JssDB.dbModelIndex;
+    var dbModelColumn = JssDB.dbModelColumn;
+    var dbModelIndexType = JssDB.dbModelIndexType;
+    var dbModelTransformation = JssDB.dbModelTransformation;
+    var dbModelEvent = JssDB.dbModelEvent;
+
     function MyTable(db, tableName) {
         this.dbRead = function (filters, skip, take, callback) {
             db.dbRead(tableName, filters, skip, take, callback);
@@ -226,13 +232,14 @@ JssDB.dbCode = JssDB.dbCode || (function () {
                                 for (var i = 0; i < eventobj.length; i++) {
                                     var theOld = oldobjs[i];
                                     var thenew = eventobj[i];
+                                    var table = thenew.table;
                                     if (eventtype[i] == 1 && theOld) {
-                                        if (dbModelEvent[obj.table].onDelete) {
-                                            dbModelEvent[obj.table].onDelete(theOld);
+                                        if (dbModelEvent[table].onDelete) {
+                                            dbModelEvent[table].onDelete(theOld);
                                         }
                                     } else if (eventtype[i] != 1) {
-                                        if (dbModelEvent[obj.table].onSave) {
-                                            dbModelEvent[obj.table].onSave(theOld, thenew);
+                                        if (dbModelEvent[table].onSave) {
+                                            dbModelEvent[table].onSave(theOld, thenew);
                                         }
                                     }
                                 }

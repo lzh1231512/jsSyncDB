@@ -11,8 +11,15 @@
     var timepiece = JssDB.tools.timepiece;
     var ExecQueue = JssDB.tools.ExecQueue;
 
+    var dbModelIndex = JssDB.dbModelIndex;
+    var dbModelColumn = JssDB.dbModelColumn;
+    var dbModelIndexType = JssDB.dbModelIndexType;
+    var dbModelTransformation = JssDB.dbModelTransformation;
+    var dbModelEvent = JssDB.dbModelEvent;
+
+
     function UnitTestObj(a, b, c) {
-        this._temp = _dbObj;
+        this._temp = JssDB._dbObj;
         this._temp(uuid(), "UnitTest");
         this.a = a + '';
         this.b = b;
