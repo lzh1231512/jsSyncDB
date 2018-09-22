@@ -6,32 +6,27 @@
     <script src="javascript/jquery-1.8.0.min.js"></script>
     <script src="javascript/DB/tools.js"></script>
     <script src="javascript/DB/base/dbCache.js"></script>
+    <script src="javascript/DB/dbBase.js"></script>
     <script src="javascript/DB/base/dbSqlite.js"></script>
     <script src="javascript/DB/base/dbLocalStorage.js"></script>
     <script src="javascript/DB/base/dbIndexedDB.js"></script>
     <script src="javascript/DB/dbModel.js"></script>
     <script src="javascript/DB/dbCore.js"></script>
     <script src="javascript/DB/dbSync.js"></script>
-    <script src="javascript/DB/dbBase.js"></script>
+
     <script src="javascript/UnitTest/dbCache.js"></script>
-    <!--<script src="javascript/UnitTest/dbIndexedDB.js"></script>-->
     <!--<script src="javascript/UnitTest/tools.js"></script>-->
     <!--<script src="javascript/UnitTest/dbBase.js"></script>-->
     <script src="javascript/UnitTest/dbCore.js"></script>
     <!--<script src="javascript/DB/test3.js"></script>-->
     <script>
-        var obj = {};
-        obj['2'] = 123;
-        console.log(obj);
-    </script>
-    <script>
-        
+
         jQuery(function () {
             jQuery('#t2').click(function () {
                 var obj1 = new testObj(jQuery('#t1').val(), 2);
                 mySyncDB.writeObj(obj1, function () {
                 });
-               // mySyncDB.sync();
+                // mySyncDB.sync();
             });
             jQuery('#Button1').click(function () {
                 mySyncDB.dbReadObj(jQuery('#t3').val(), function (obj) {

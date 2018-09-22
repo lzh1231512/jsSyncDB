@@ -1,6 +1,15 @@
 ﻿/// <reference path="../DB/tools.js" />
 /// <reference path="../DB/dbBase.js" />
 (function () {
+    var uuid = JssDB.tools.uuid;
+    var clone = JssDB.tools.clone;
+    var arrayExtend = JssDB.tools.arrayExtend;
+    var _check = JssDB.tools._check;
+    var _log = JssDB.tools._log;
+    var isArray = JssDB.tools.isArray;
+    var timepiece = JssDB.tools.timepiece;
+    var ExecQueue = JssDB.tools.ExecQueue;
+    var MyBaseDB = JssDB.dbBase;
     var db = MyBaseDB.get('MyBaseDB');
 
     var key0 = 'key', val0 = null;
