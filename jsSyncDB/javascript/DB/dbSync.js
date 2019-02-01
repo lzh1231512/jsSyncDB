@@ -62,7 +62,7 @@ var JssDB = function (code, dbName, serviceUrl, dbType) {
     dbModelTransformation['mainSync.Temp'] = dbModelTransformation['mainSync'];
     function MySyncDB(code, dbName, serviceUrl, dbType) {
         var DbName = dbName;
-        var theDB = JssDB.dbCode.get(dbName, dbType);
+        var theDB = JssDB.dbCode.get(dbName + "_" + code, dbType);
         var Code = code;
         if (serviceUrl && serviceUrl.charAt(serviceUrl.length - 1) != '/')
             serviceUrl += '/';
