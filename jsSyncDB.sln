@@ -24,13 +24,28 @@ Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "jsSyncDB", "jsSyncDB\", "{7
 		SlnRelativePath = "jsSyncDB\"
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "web-netcore", "web-netcore\web-netcore.csproj", "{A988DEB5-E520-4F57-AA7E-B075C4DC4542}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "web-netcore-unit", "web-netcore-unit\web-netcore-unit.csproj", "{1B4DDE05-5074-4C79-B9D0-66DE2425EF9C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{73A6F84D-CA50-4790-BE33-710BB4AF7105}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{73A6F84D-CA50-4790-BE33-710BB4AF7105}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{73A6F84D-CA50-4790-BE33-710BB4AF7105}.Release|Any CPU.ActiveCfg = Debug|Any CPU
+		{73A6F84D-CA50-4790-BE33-710BB4AF7105}.Release|Any CPU.Build.0 = Debug|Any CPU
+		{A988DEB5-E520-4F57-AA7E-B075C4DC4542}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A988DEB5-E520-4F57-AA7E-B075C4DC4542}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A988DEB5-E520-4F57-AA7E-B075C4DC4542}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A988DEB5-E520-4F57-AA7E-B075C4DC4542}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1B4DDE05-5074-4C79-B9D0-66DE2425EF9C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1B4DDE05-5074-4C79-B9D0-66DE2425EF9C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1B4DDE05-5074-4C79-B9D0-66DE2425EF9C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1B4DDE05-5074-4C79-B9D0-66DE2425EF9C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -1,0 +1,14 @@
+C:\Git\jsSyncDB\web-netcore\bin\Debug\netcoreapp2.2\web-netcore.deps.json
+C:\Git\jsSyncDB\web-netcore\bin\Debug\netcoreapp2.2\web-netcore.runtimeconfig.json
+C:\Git\jsSyncDB\web-netcore\bin\Debug\netcoreapp2.2\web-netcore.runtimeconfig.dev.json
+C:\Git\jsSyncDB\web-netcore\bin\Debug\netcoreapp2.2\web-netcore.dll
+C:\Git\jsSyncDB\web-netcore\bin\Debug\netcoreapp2.2\web-netcore.pdb
+C:\Git\jsSyncDB\web-netcore\obj\Debug\netcoreapp2.2\web-netcore.csprojAssemblyReference.cache
+C:\Git\jsSyncDB\web-netcore\obj\Debug\netcoreapp2.2\web-netcore.csproj.CoreCompileInputs.cache
+C:\Git\jsSyncDB\web-netcore\obj\Debug\netcoreapp2.2\web-netcore.RazorAssemblyInfo.cache
+C:\Git\jsSyncDB\web-netcore\obj\Debug\netcoreapp2.2\web-netcore.RazorAssemblyInfo.cs
+C:\Git\jsSyncDB\web-netcore\obj\Debug\netcoreapp2.2\web-netcore.AssemblyInfoInputs.cache
+C:\Git\jsSyncDB\web-netcore\obj\Debug\netcoreapp2.2\web-netcore.AssemblyInfo.cs
+C:\Git\jsSyncDB\web-netcore\obj\Debug\netcoreapp2.2\web-netcore.RazorTargetAssemblyInfo.cache
+C:\Git\jsSyncDB\web-netcore\obj\Debug\netcoreapp2.2\web-netcore.dll
+C:\Git\jsSyncDB\web-netcore\obj\Debug\netcoreapp2.2\web-netcore.pdb
