@@ -1,0 +1,441 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>书签</title>
+    <meta name="viewport" content=" initial-scale=1.0,user-scalable=no" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+    <meta content="black" name="apple-mobile-web-app-status-bar-style" />
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+    <meta http-equiv="pragma" content="pragma"/>
+    <meta http-equiv="cache-control" content="public"/>
+    <meta http-equiv="expires" content="Fri Feb 01 2999 00:00:00 GMT+0800" />
+    <link rel="shortcut icon"href="favicon.ico"/> 
+    <script src="jquery-3.2.1.min.js"></script>
+    <script src="JssDB-1.1.min.js"></script>
+    <script src="DB/dbModel2.js"></script>
+    <script>
+        var baseInfo, syncDB;
+        $(function () {
+            var code = getQueryString('code');
+            baseInfo = new JssDB.dbCode('baseInfo_' + code);
+            syncDB = new JssDB(code, 'MBSyncDB', '');
+            syncDB.autoSync(function (res) {
+                if (res && res.length) {
+                    baseInfo.dbRead('LBM', function (localLst) {
+                        var opLst = [];
+                        var opLst2 = [];
+                        for (var i = 0; i < res.length; i++) {
+                            var obj = res[i].data;
+                            var path = obj.path.substr(1);
+                            var info = path.split('^^url:');
+                            var url = info.length > 1 ? info[1] : '';
+                            path = info[0];
+                            if (!url) {
+                                path = path.substr(0, path.length - 1);
+                                var a = path.lastIndexOf('/');
+                                path = path.substr(0, a + 1);
+                            }
+                            var oldobj = null;
+                            for (var j = 0; j < localLst.length; j++) {
+                                if (localLst[j].path == path && (localLst[j].url == url || (!url && !localLst[j].url))) {
+                                    oldobj = localLst[j];
+                                    break;
+                                }
+                            }
+                            if (oldobj != null) {
+                                oldobj.title = obj.title;
+                                opLst.push(oldobj);
+                                opLst2.push(obj.action == 1 ? 0 : 1);
+                            } else if (obj.action == 1) {
+                                var lbm = new LBM(obj.title, path, url);
+                                opLst.push(lbm);
+                                opLst2.push(0);
+                            }
+                        }
+                        if (opLst.length) {
+                            baseInfo.dbOpObjs(opLst2, opLst, function () {
+                                show(tmppath);
+                            });
+                        }
+                    });
+                }
+            });
+        });
+    </script>
+    <script>
+        var bmdata;
+        var tmppath;
+        var mainpath = '/';
+        var onhashchangeflag = false;
+        var bjfs = getCookie('bjfs');
+        function show0(data,path) {
+            var rqid = '#body2';
+            if (bjfs != 1) {
+                rqid = '#body';
+            }
+            $('#body,#body2').empty();
+            $('#body,#body2').hide();
+            for (var j = 0; j < data.length; j++) {
+                var bm = data[j];
+                var txt = bm.title;
+                if (bjfs != 1) {
+                    if (txt.length > 18)
+                        txt = txt.substr(0, 15) + '...';
+                }
+                if (bm.url) {
+                    var str = '<div><a href="' + bm.url + '" target="_blank"><img src="'+(geticourl(bm.url))+'"/><div>' + txt + '</div><a></div>';
+                    $(rqid).append(str);
+                }
+            }
+            for (var j = 0; j < data.length; j++) {
+                var bm = data[j];
+                var txt = bm.title;
+                if (bjfs != 1) {
+                    if (txt.length > 18)
+                        txt = txt.substr(0, 15) + '...';
+                }
+                if (!bm.url) {
+                    var str = '<div onclick="show(\'' + bm.path + bm.title + '/' + '\')"><img src="wjj.png"/><div>' + txt + '</div></div>';
+                    $(rqid).append(str);
+                }
+            }
+            $(rqid).show();
+        }
+        var hashindex = 0;
+        function show(path) {
+            var href = window.location.href;
+            var a = href.indexOf('#');
+            onhashchangeflag = true;
+            if (a != -1) {
+                href = href.substr(0, a);
+                href += '#' + hashindex++;
+                window.location.href = href;
+            } else {
+                href += '#' + hashindex++;
+                window.location.href = href;
+            }
+            tmppath = path;
+            $('#state').html(tmppath);
+
+            baseInfo.dbRead('LBM', [['path', '=', path]], function (data) {
+                show0(data, path);
+            });
+        }
+
+        function search(gjz) {
+            tmppath = '/search:' + gjz;
+            $('#state').html(tmppath);
+            tmpsearchdata = [];
+            baseInfo.dbRead('LBM',['title','con',gjz], function (data) {
+                show0(data);
+            });
+        }
+
+        $(function () {
+            $('#btnfh').click(function () {
+                if (tmppath == mainpath)
+                    return;
+                if (tmppath.indexOf('/search:') ==0) {
+                    tmppath = mainpath;
+                    show(tmppath);
+                    return;
+                }
+                var a = tmppath.lastIndexOf('/', tmppath.length - 2);
+                var ss = tmppath.substr(0, a + 1);
+                show(ss);
+            });
+            window.onhashchange = function () {
+                if (onhashchangeflag) {
+                    onhashchangeflag = false;
+                    return;
+                }
+                $('#btnfh').click();
+            }
+            $('#bjlb,#bjtb').css('border', '0px');
+            if (bjfs != 1)
+                $('#bjtb').css('border', '1px solid #000');
+            else
+                $('#bjlb').css('border', '1px solid #000');
+            $('#bjlb,#bjtb').click(function () {
+                var fs = 0;
+                if (this.id == 'bjlb') {
+                    fs = 1;
+                }
+                if (fs == bjfs)
+                    return;
+                bjfs = fs;
+                setCookie('bjfs', bjfs);
+                $('#bjlb,#bjtb').css('border', '0px');
+                $(this).css('border', '1px solid #000');
+                if (tmppath.indexOf('/search:') != 0) {
+                    show(tmppath);
+                } else {
+                    search(tmppath.substr(8));
+                }
+            });
+            $('#btnsearch').click(function () {
+                $('#sstck').show();
+            });
+            $('#sqd').click(function () {
+                var gjz = $('#gjz').val();
+                $('#sstck').hide();
+                search(gjz);
+            });
+            $('#sqx').click(function () {
+                $('#sstck').hide();
+            });
+            tmppath = mainpath;
+            show(tmppath);
+        });
+        function getCookie(name) {
+            var arr, reg = new RegExp("(^| )" + name + "=([^;]*)(;|$)");
+            if (arr = document.cookie.match(reg))
+                return unescape(arr[2]);
+            else
+                return null;
+        }
+        function setCookie(name, value) {
+            var Days = 30;
+            var exp = new Date();
+            exp.setTime(exp.getTime() + Days * 24 * 60 * 60 * 1000);
+            document.cookie = name + "=" + escape(value) + ";expires=" + exp.toGMTString();
+        }
+        function getQueryString(name) {
+            var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)", "i");
+            var r = window.location.search.substr(1).match(reg);
+            if (r != null) return unescape(r[2]); return null;
+        }
+        function geticourl(url){
+        	var res;
+        	if(url.indexOf('http')==0){
+        		var isHttps=url.indexOf('https')==0;
+        		var a=url.indexOf('/',8);
+        		if(a!=-1){
+        			res=url.substring(isHttps?8:7,a);
+        		}else{
+        			res=url.substring(isHttps?8:7);
+        		}
+        		
+        		res="GetIconServlet?type="+(isHttps?2:1)+"&domain="+res;
+        	}else{
+        		res="wd.jpg";
+        	}
+        	return res;
+        }
+    </script>
+    <style>
+        * {
+            color: #000;
+            font-size:12px;
+        }
+        html, body {
+            margin:0px;
+            padding:0px;
+        }
+        #body {
+            overflow:hidden;
+        }
+        #body img {
+            width:80px;
+            height:80px;
+            margin-left:auto;
+            margin-right:auto;
+        }
+        #body > div{
+            float:left;
+            width:90px;
+            height:130px;
+            text-align:center;
+            cursor:pointer;
+        }
+        a {
+            text-decoration: none;
+        }
+        #top {
+            overflow:hidden;
+            margin-top:5px;
+        }
+        #btnfh {
+            width:30px;
+            height:30px;
+            margin-left:20px;
+            margin-top:5px;
+            float:left;
+            cursor:pointer;
+        }
+            #btnfh img {
+                width:100%;
+                height:100%;
+            }
+        #bjtb {
+            width:30px;
+            height:30px;
+            float:right;
+            margin-top:5px;
+            text-align:center;
+            border:1px solid #000;
+            margin-right:20px;
+        }
+            #bjtb img {
+                margin-left:auto;
+                margin-right:auto;
+                width:26px;
+                margin-top:2px;
+                cursor:pointer;
+                height:26px;
+            }
+        #bjlb {
+            width:30px;
+            height:30px;
+            float:right;
+            margin-top:5px;
+            text-align:center;
+            margin-right:20px;
+        }
+            #bjlb img {
+                margin-left:auto;
+                margin-right:auto;
+                width:26px;
+                margin-top:2px;
+                height:26px;
+                cursor:pointer;
+            }
+        #btnsearch {
+            width:30px;
+            height:30px;
+            float:right;
+            margin-top:5px;
+            text-align:center;
+            margin-right:20px;
+        }
+            #btnsearch > img {
+                margin-left:auto;
+                margin-right:auto;
+                width:26px;
+                margin-top:2px;
+                height:26px;
+                cursor:pointer;
+            }
+        #body2 {
+            overflow:hidden;
+        }
+        #body2 img {
+            width:25px;
+            height:25px;
+            float:left;
+        }
+        #body2 > div{
+            padding-left:20px;
+            height:30px;
+            line-height:30px;
+            cursor:pointer;
+        }
+            #body2 > div > div {
+                height:25px;
+                white-space:nowrap;
+                margin-left:30px;
+            }
+            #body2 > div > a > div {
+                height: 25px;
+                white-space:nowrap;
+                margin-left:30px;
+            }
+        #state {
+            height:20px;
+            line-height:20px;
+            font-size:12px;
+            padding-left:10px;
+            white-space:nowrap;
+            overflow:hidden;
+        }
+        #mainbody {
+            position:absolute;
+            top:67px;
+            width:100%;
+            bottom:0px;
+        }
+            #mainbody > div {
+                height:100%;
+                width:100%;
+                overflow-y:auto;
+            }
+        #sstck {
+            width:240px;
+            height:100px;
+            background:#fff;
+            border:1px solid #000;
+            -moz-border-radius:10px;
+            -webkit-border-radius:10px;
+            position:absolute;
+            top: 50%; 
+            left: 50%;
+            margin-top:-50px;
+            margin-left:-120px;
+            z-index:99;
+            display:none;
+        }
+        #sstckbtn > div{
+            width:80px;
+            height:25px;
+            line-height:25px;
+            text-align:center;
+            margin-left:26.66px;
+            border:1px solid #000;
+            float:left;
+            -moz-border-radius:5px;
+            -webkit-border-radius:5px;
+            cursor:pointer;
+        }
+        #sstcktt {
+            height:30px;
+            line-height:30px;
+            padding-left:20px;
+        }
+        #sstckbody {
+            height:30px;
+        }
+            #sstckbody input {
+                width:200px;
+                margin-left:20px;
+            }
+    </style>
+</head>
+<body>
+    <div id="sstck">
+        <div id="sstcktt">
+            搜索关键字：
+        </div>
+        <div id="sstckbody">
+            <input id="gjz" type="search" name="" value="" />
+        </div>
+        <div id="sstckbtn">
+            <div id="sqd">确定</div>
+            <div id="sqx">取消</div>
+        </div>
+    </div>
+    <div id="state">
+    </div>
+    <div id="top">
+        <div id="bjtb">
+            <img src="tb.png" alt="" />
+        </div>
+        <div id="bjlb">
+            <img src="lb.png" alt="" />
+        </div>
+        <div id="btnsearch">
+            <img src="search.png" alt="" />
+        </div>
+        <div id="btnfh">
+            <img src="left.png"/>
+        </div>
+    </div>
+    <div id="mainbody">
+        <div id="body">
+         </div>
+        <div id="body2">
+        </div>
+    </div>
+</body>
+</html>

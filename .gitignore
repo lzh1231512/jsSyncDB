@@ -7,3 +7,8 @@
 /packages
 /.vs
 /web-netcore-unit/obj/Debug
+/web-netcore/bin
+/web-netcore/obj
+/web-netcore-unit/bin
+/web-netcore-unit/obj
+/web-netcore/web-netcore.csproj.user

@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace web_netcore.Commons
+namespace web_netcore
 {
     [JsonObject(MemberSerialization.OptOut)]
     public class DBObj
