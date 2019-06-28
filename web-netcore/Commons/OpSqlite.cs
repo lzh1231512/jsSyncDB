@@ -23,6 +23,8 @@ namespace web_netcore.Commons
                 SQLiteDataAdapter adapter = new SQLiteDataAdapter(cmd);
                 DataTable table = new DataTable();
                 adapter.Fill(table);
+                cmd.Dispose();
+                adapter.Dispose();
                 if (table.Rows.Count==0)
                 {
                     var cmd2 = new SQLiteCommand();
@@ -38,10 +40,11 @@ namespace web_netcore.Commons
                     stmt.AppendLine("insert into t_quickSave (pkey,pvalue) values('uuid','" + uuid + "');");
                     cmd2.CommandText = stmt.ToString();
                     cmd2.ExecuteNonQuery();
+                    cmd2.Dispose();
                 }
                 return conn;
             }
-            catch
+            catch (Exception e)
             {
             }
             return null;
@@ -62,6 +65,8 @@ namespace web_netcore.Commons
                 {
                     res.Add(sr.GetInt64(0));
                 }
+                sr.Close();
+                cmd.Dispose();
                 return res;
             }
             finally
@@ -69,8 +74,12 @@ namespace web_netcore.Commons
                 try
                 {
                     conn.Close();
+                    conn.Dispose();
+                    System.Data.SQLite.SQLiteConnection.ClearAllPools();
+                    GC.Collect();
+                    GC.WaitForPendingFinalizers();
                 }
-                catch
+                catch (Exception e)
                 {
                 }
             }
@@ -83,24 +92,38 @@ namespace web_netcore.Commons
                 return null;
             try
             {
-                SQLiteCommand cmd = conn.CreateCommand();
-                cmd.CommandText = "select max(id) maxid from t_main;";
-                SQLiteDataReader sr = cmd.ExecuteReader();
                 long? res = null;
-                
-                if (sr.Read())
+                var cmd = conn.CreateCommand();
+                cmd.CommandText = "select max(id) maxid from t_main;";
+                var sr = cmd.ExecuteReader();
+                if (sr.Read() && !sr.IsDBNull(0))
                 {
-                    res = sr.GetInt64(0);
+                    try
+                    {
+                        res = sr.GetInt64(0);
+                    }
+                    catch { }
                 }
+                sr.Close();
+                cmd.Dispose();
+                
                 return res;
+            }
+            catch (Exception e)
+            {
+                return 0;
             }
             finally
             {
                 try
                 {
                     conn.Close();
+                    conn.Dispose();
+                    System.Data.SQLite.SQLiteConnection.ClearAllPools();
+                    GC.Collect();
+                    GC.WaitForPendingFinalizers();
                 }
-                catch
+                catch (Exception e)
                 {
                 }
             }
@@ -121,13 +144,15 @@ namespace web_netcore.Commons
                 {
                     DBObj obj = new DBObj()
                     {
-                        id=sr.GetInt64(0),
-                        data=sr.GetString(1),
-                        isDelete=sr.GetInt32(2),
-                        objuuid=sr.GetString(3)
+                        id = sr.GetInt64(0),
+                        data = sr.GetString(1),
+                        isDelete = sr.GetInt32(2),
+                        objuuid = sr.GetString(3)
                     };
                     res.Add(obj);
                 }
+                sr.Close();
+                cmd.Dispose();
                 return res;
             }
             finally
@@ -135,8 +160,12 @@ namespace web_netcore.Commons
                 try
                 {
                     conn.Close();
+                    conn.Dispose();
+                    System.Data.SQLite.SQLiteConnection.ClearAllPools();
+                    GC.Collect();
+                    GC.WaitForPendingFinalizers();
                 }
-                catch
+                catch (Exception e)
                 {
                 }
             }
@@ -160,11 +189,13 @@ namespace web_netcore.Commons
                 var rs0 = stmt0.ExecuteReader();
                 if (rs0.Read())
                 {
-                    if (uploadUUID==(rs0.GetString(0)))
+                    if (uploadUUID == (rs0.GetString(0)))
                     {
                         res = long.Parse(rs0.GetString(1));
                     }
                 }
+                rs0.Close();
+                stmt0.Dispose();
                 if (res == 0)
                 {
                     using (var tra = conn.BeginTransaction())
@@ -203,6 +234,8 @@ namespace web_netcore.Commons
                             if (rs.Read())
                             {
                                 long newID = rs.GetInt64(0);
+                                rs.Close();
+                                stmt.Dispose();
                                 if (res == 0)
                                     res = newID;
                                 sql = "insert into t_main_deleteHistory(newid,oldid) select " + newID
@@ -214,6 +247,12 @@ namespace web_netcore.Commons
                                 var stmt3 = conn.CreateCommand();
                                 stmt3.CommandText = sql;
                                 stmt3.ExecuteNonQuery();
+                                stmt3.Dispose();
+                            }
+                            else
+                            {
+                                rs.Close();
+                                stmt.Dispose();
                             }
                         }
                         String sql2 = "delete from t_quickSave where  pkey='" + fzr(localUUID) + "';";
@@ -224,6 +263,7 @@ namespace web_netcore.Commons
                         var stmt2 = conn.CreateCommand();
                         stmt2.CommandText = sql2;
                         stmt2.ExecuteNonQuery();
+                        stmt2.Dispose();
                         tra.Commit();
                     }
                 }
@@ -234,8 +274,12 @@ namespace web_netcore.Commons
                 try
                 {
                     conn.Close();
+                    conn.Dispose();
+                    System.Data.SQLite.SQLiteConnection.ClearAllPools();
+                    GC.Collect();
+                    GC.WaitForPendingFinalizers();
                 }
-                catch
+                catch (Exception e)
                 {
                 }
             }
@@ -256,6 +300,8 @@ namespace web_netcore.Commons
                 {
                     res = rs.GetString(0);
                 }
+                rs.Close();
+                stmt.Dispose();
                 return res;
             }
             finally
@@ -263,8 +309,12 @@ namespace web_netcore.Commons
                 try
                 {
                     conn.Close();
+                    conn.Dispose();
+                    System.Data.SQLite.SQLiteConnection.ClearAllPools();
+                    GC.Collect();
+                    GC.WaitForPendingFinalizers();
                 }
-                catch
+                catch (Exception e)
                 {
                 }
             }
@@ -284,6 +334,7 @@ namespace web_netcore.Commons
                     var stmt = conn.CreateCommand();
                     stmt.CommandText = sql;
                     stmt.ExecuteNonQuery();
+                    stmt.Dispose();
                     tra.Commit();
                 }
                 return true;
@@ -293,8 +344,12 @@ namespace web_netcore.Commons
                 try
                 {
                     conn.Close();
+                    conn.Dispose();
+                    System.Data.SQLite.SQLiteConnection.ClearAllPools();
+                    GC.Collect();
+                    GC.WaitForPendingFinalizers();
                 }
-                catch
+                catch (Exception e)
                 {
                 }
             }

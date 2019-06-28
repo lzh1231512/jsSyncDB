@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using web_netcore;
 using web_netcore.Commons;
 
 namespace Tests.Commons
@@ -55,10 +56,13 @@ namespace Tests.Commons
                     isDelete=0
                 }
             };
-
-            OpSqlite.InsertDBObjLst(data, filepath, localGUID, uploadGUID++.ToString(), false);
+            Assert.AreEqual(0, OpSqlite.getMaxID(filepath) ?? 0);
 
             var res = OpSqlite.SelectDBObj(0, 100, filepath);
+            //Assert.AreEqual(0, OpSqlite.getMaxID(filepath) ?? 0);
+            OpSqlite.InsertDBObjLst(data, filepath, localGUID, uploadGUID++.ToString(), false);
+            Assert.AreEqual(2, OpSqlite.getMaxID(filepath) ?? 0);
+            res = OpSqlite.SelectDBObj(0, 100, filepath);
             Assert.AreEqual(2, res.Count);
             Assert.AreEqual("o1", res[0].objuuid);
             Assert.AreEqual("v2", res[1].data);
