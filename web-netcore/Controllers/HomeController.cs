@@ -23,8 +23,9 @@ namespace web_netcore.Controllers
         }
 
 
-        public IActionResult Index()
+        public IActionResult Index(string cmd)
         {
+            ViewBag.cmd = cmd ?? "";
             return View();
         }
 
