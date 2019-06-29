@@ -25,6 +25,7 @@ namespace web_netcore.Controllers
 
         public IActionResult Index(String type, String domain)
         {
+            domain = domain.Replace(":", "_");
             var filePath = Configs.tempPath;
             var tempFilePath = "wd.jpg";
             filePath = _hostingEnvironment.WebRootPath.TrimEnd('\\', '/')
@@ -33,89 +34,22 @@ namespace web_netcore.Controllers
 
             tempFilePath = _hostingEnvironment.WebRootPath.TrimEnd('\\', '/')
                + "/" + tempFilePath;
-            Response.ContentType = "image/x-icon";
-            Response.Headers.Add("expires", "Fri Feb 01 2999 00:00:00 GMT+0800");
             String p = filePath + "/" + domain + ".ico";
+
             if (!System.IO.File.Exists(p))
             {
-                try
-                {
-                    String url = (type == ("1") ? "http" : "https") + "://" + domain + "/favicon.ico";
-                    if (!HttpDownload(url, p))
-                    {
-                        System.IO.File.Copy(_hostingEnvironment.WebRootPath.TrimEnd('\\', '/')
-                            + "/wd.ico", p,true);
-                    }
-                }
-                catch (Exception e)
-                {
-                }
+                String url = (type == ("1") ? "http" : "https") + "://" + domain + "/favicon.ico";
+                ImageDownloader.addTask(url, p, _hostingEnvironment.WebRootPath.TrimEnd('\\', '/')
+                        + "/wd.ico");
+                return File("~/wd.ico", "image/x-icon");
             }
-            return Redirect("~/" + Configs.tempPath + "/" + domain + ".ico");
+            
+            Response.ContentType = "image/x-icon";
+            Response.Headers.Add("expires", "Fri Feb 01 2999 00:00:00 GMT+0800");
+            return File("~/" + Configs.tempPath + "/" + domain + ".ico", "image/x-icon");
         }
 
-        public static bool HttpDownload(string url, string filePath)
-        {
-            try
-            {
-                string fileName = Path.GetFileName(url);
-                if (System.IO.File.Exists(filePath))
-                {
-                    System.IO.File.Delete(filePath);
-                }
-                FileStream fs = new FileStream(filePath, FileMode.Append, FileAccess.Write, FileShare.ReadWrite);
-                HttpWebRequest request = WebRequest.Create(url) as HttpWebRequest;
-                HttpWebResponse response = request.GetResponse() as HttpWebResponse;
-                Stream responseStream = response.GetResponseStream();
-                byte[] bArr = new byte[1024];
-                int iTotalSize = 0;
-                int size = responseStream.Read(bArr, 0, (int)bArr.Length);
-                while (size > 0)
-                {
-                    iTotalSize += size;
-                    fs.Write(bArr, 0, size);
-                    size = responseStream.Read(bArr, 0, (int)bArr.Length);
-                }
-                fs.Close();
-                responseStream.Close();
-                return IsImage(filePath);
-            }
-            catch
-            {
-                return false;
-            }
-        }
-        /// 判断文件是否为图片
-        /// </summary>
-        /// <param name="path">文件的完整路径</param>
-        /// <returns>返回结果</returns>
-        public static Boolean IsImage(string path)
-        {
-            try
-            {
-                Sniffer sniffer = new Sniffer();
-                sniffer.Populate(FileTypes.Common);
-
-                byte[] fileHead = new byte[20];
-
-                System.IO.FileStream fs = new FileStream(path, FileMode.Open);
-                fs.Read(fileHead, 0, 20);
-                fs.Close();
-                fs.Dispose();
-
-                // start match.
-                List<string> results = sniffer.Match(fileHead);
-
-
-                return results.Contains("ico")||
-                    results.Contains("jpg")||
-                    results.Contains("png")||
-                    results.Contains("gif");
-            }
-            catch (Exception e)
-            {
-                return false;
-            }
-        }
+        
+        
     }
 }
