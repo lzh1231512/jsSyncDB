@@ -1,6 +1,6 @@
 [
   {
-    "outputFileName": "Release/JssDB-1.1.js",
+    "outputFileName": "Release/JssDB-1.2.js",
     "inputFiles": [
       "javascript/DB/dbSync.js",
       "javascript/DB/dbModel.js",

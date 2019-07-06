@@ -1,5 +1,5 @@
 ﻿/// <reference path="dbSync.js" />
-var mySyncDB = new JssDB('testuser', 'testdb3', 'https://lzhsb.cc');
+var mySyncDB = new JssDB('testuser', 'testdb3', 'http://localhost:50939/');
 
 function testObj(a, b) {
     this._temp = JssDB._dbObj;
@@ -42,7 +42,7 @@ mySyncDB.clear(function () {
     //var obj3 = new testObj(31, 9);
     var isDel = []; var objs = [];
     console.log('begin insert');
-    for (var i = 0; i < 100; i++) {
+    for (var i = 0; i < 10; i++) {
         objs.push(new testObj(i + '123', 9));
         isDel.push(0);
     }

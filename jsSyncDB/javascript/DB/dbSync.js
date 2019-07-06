@@ -68,6 +68,12 @@ var JssDB = function (code, dbName, serviceUrl, dbType) {
             serviceUrl += '/';
         var UploadDBObj = serviceUrl + 'UploadDBObj';
         var DownloadDBObj = serviceUrl + 'DownloadDBObj';
+        var WebSocketUrl = '';
+        if (serviceUrl.indexOf('http://') == 0) {
+            WebSocketUrl = "ws" + serviceUrl.substring(4) + 'ws';
+        } else {
+            WebSocketUrl = "wss" + serviceUrl.substring(5) + 'ws';
+        }
         var hasNewData = false;
         var transferLimit = 100;
         var isWait = -1;
@@ -581,6 +587,42 @@ var JssDB = function (code, dbName, serviceUrl, dbType) {
 
         var timer = null;
         var js = 0;
+        var djs = 0;
+        var isOpenWebSocket = false;
+        var WebSocketObj = null;
+        function openWebSocket(callback) {
+            closeWebSocket();
+            WebSocketObj = new WebSocket(WebSocketUrl);
+            WebSocketObj.onopen = function (evt) {
+                console.log("WebSocket Connection open ...");
+                isOpenWebSocket = true;
+                WebSocketObj.send(JSON.stringify({
+                    DBName: DbName,
+                    Code: Code
+                }));
+            };
+            WebSocketObj.onmessage = function (evt) {
+                isOpenWebSocket = true;
+                console.log("Received Message: " + evt.data);
+                if (evt.data == "1") {
+                    download(callback);
+                }
+            };
+            WebSocketObj.onclose = function (evt) {
+                isOpenWebSocket = false;
+                console.log("Connection closed.");
+            };
+            WebSocketObj.onerror = function (evt) {
+                write("Error: " + evt.data);
+            };
+            $(window).on('beforeunload', closeWebSocket);
+        }
+        function closeWebSocket() {
+            if (isOpenWebSocket) {
+                WebSocketObj.close();
+            }
+            $(window).off('beforeunload', closeWebSocket);
+        }
         //callback(resdata) 
         //resdata: array obj:new data
         //         0        :sync successfully, but no new data
@@ -590,39 +632,70 @@ var JssDB = function (code, dbName, serviceUrl, dbType) {
             if (timer != null) {
                 return;
             }
-            isWait = 0;
-            timer = window.setInterval(function () {
-                if (js > 0) {
-                    js--;
-                    return;
-                }
-                if (restoreSeek() >= 0) {
-                    restore(function (status) {
-                        if (status == -9) {
-                            js += 30;
-                        }
-                    });
-                } else {
-                    if (hasNewData)
+            if (typeof WebSocket != 'undefined') {
+                timer = window.setInterval(function () {
+                    if (!isOpenWebSocket) {
+                        openWebSocket(callback);
+                    }
+                    if (djs <= 0) {
+                        djs = 5 * 60;
+                        download(callback);
+                    }
+                    djs--;
+                    if (js > 0) {
+                        js--;
+                        return;
+                    }
+                    if (restoreSeek() >= 0) {
+                        restore(function (status) {
+                            if (status == -9) {
+                                js += 30;
+                            }
+                        });
+                    } else if (hasNewData){
                         upload(function (status) {
                             if (status == -9) {
                                 js += 30;
                             }
                         });
-                    download(function (res) {
-                        if (res == -9) {
-                            js += 30;
-                        }
-                        callback(res);
-                    });
-                }
-            }, 1000);
+                    }
+                }, 1000);
+            } else {
+                isWait = 0;
+                timer = window.setInterval(function () {
+                    if (js > 0) {
+                        js--;
+                        return;
+                    }
+                    if (restoreSeek() >= 0) {
+                        restore(function (status) {
+                            if (status == -9) {
+                                js += 30;
+                            }
+                        });
+                    } else {
+                        if (hasNewData)
+                            upload(function (status) {
+                                if (status == -9) {
+                                    js += 30;
+                                }
+                            });
+                        download(function (res) {
+                            if (res == -9) {
+                                js += 30;
+                            }
+                            callback(res);
+                        });
+                    }
+                }, 1000);
+            }
         }
         this.stopAutoSync = function () {
             if (timer) {
                 window.clearInterval(timer);
             }
             timer = null;
+            closeWebSocket();
         }
         this.clear = function (callback) {
             theDB.clearDB(callback);
@@ -635,6 +708,11 @@ var JssDB = function (code, dbName, serviceUrl, dbType) {
                 url += '/';
             UploadDBObj = url + 'UploadDBObj';
             DownloadDBObj = url + 'DownloadDBObj';
+            if (url.indexOf('http://') == 0) {
+                WebSocketUrl = "ws" + url.substring(4) + 'ws';
+            } else {
+                WebSocketUrl = "wss" + url.substring(5) + 'ws';
+            }
             Code = code;
         }
         return this;

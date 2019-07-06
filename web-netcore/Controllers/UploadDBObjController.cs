@@ -97,6 +97,11 @@ namespace web_netcore.Controllers
             {
                 LastID.setLastId(path, lastID);
             }
+            new Thread(async delegate ()
+            {
+                await WebSocketHandler.sendMsg(DBName, code);
+            }).Start();
+            
             return Json(resObj);
         }
     }

@@ -8,19 +8,22 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black" />
     <meta content="black" name="apple-mobile-web-app-status-bar-style" />
     <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
-    <meta http-equiv="pragma" content="pragma"/>
-    <meta http-equiv="cache-control" content="public"/>
+    <meta http-equiv="pragma" content="pragma" />
+    <meta http-equiv="cache-control" content="public" />
     <meta http-equiv="expires" content="Fri Feb 01 2999 00:00:00 GMT+0800" />
-    <link rel="shortcut icon"href="favicon.ico"/> 
+    <link rel="shortcut icon" href="favicon.ico" />
     <script src="jquery-3.2.1.min.js"></script>
-    <script src="JssDB-1.1.min.js"></script>
+    <script src="JssDB-1.2.min.js"></script>
     <script src="DB/dbModel2.js"></script>
     <script>
         var baseInfo, syncDB;
         $(function () {
             var code = getQueryString('code');
             baseInfo = new JssDB.dbCode('baseInfo_' + code);
-            syncDB = new JssDB(code, 'MBSyncDB', '');
+            var url = window.location.href;
+            url = url.substring(0, url.indexOf('sq.html'));
+
+            syncDB = new JssDB(code, 'MBSyncDB', url);
             syncDB.autoSync(function (res) {
                 if (res && res.length) {
                     baseInfo.dbRead('LBM', function (localLst) {
@@ -70,7 +73,7 @@
         var mainpath = '/';
         var onhashchangeflag = false;
         var bjfs = getCookie('bjfs');
-        function show0(data,path) {
+        function show0(data, path) {
             var rqid = '#body2';
             if (bjfs != 1) {
                 rqid = '#body';
@@ -85,7 +88,7 @@
                         txt = txt.substr(0, 15) + '...';
                 }
                 if (bm.url) {
-                    var str = '<div><a href="' + bm.url + '" target="_blank"><img src="'+(geticourl(bm.url))+'"/><div>' + txt + '</div><a></div>';
+                    var str = '<div><a href="' + bm.url + '" target="_blank"><img src="' + (geticourl(bm.url)) + '"/><div>' + txt + '</div><a></div>';
                     $(rqid).append(str);
                 }
             }
@@ -128,7 +131,7 @@
             tmppath = '/search:' + gjz;
             $('#state').html(tmppath);
             tmpsearchdata = [];
-            baseInfo.dbRead('LBM',['title','con',gjz], function (data) {
+            baseInfo.dbRead('LBM', ['title', 'con', gjz], function (data) {
                 show0(data);
             });
         }
@@ -137,7 +140,7 @@
             $('#btnfh').click(function () {
                 if (tmppath == mainpath)
                     return;
-                if (tmppath.indexOf('/search:') ==0) {
+                if (tmppath.indexOf('/search:') == 0) {
                     tmppath = mainpath;
                     show(tmppath);
                     return;
@@ -207,198 +210,225 @@
             var r = window.location.search.substr(1).match(reg);
             if (r != null) return unescape(r[2]); return null;
         }
-        function geticourl(url){
-        	var res;
-        	if(url.indexOf('http')==0){
-        		var isHttps=url.indexOf('https')==0;
-        		var a=url.indexOf('/',8);
-        		if(a!=-1){
-        			res=url.substring(isHttps?8:7,a);
-        		}else{
-        			res=url.substring(isHttps?8:7);
-        		}
-        		
-        		res="GetIconServlet?type="+(isHttps?2:1)+"&domain="+res;
-        	}else{
-        		res="wd.jpg";
-        	}
-        	return res;
+        function geticourl(url) {
+            var res;
+            if (url.indexOf('http') == 0) {
+                var isHttps = url.indexOf('https') == 0;
+                var a = url.indexOf('/', 8);
+                if (a != -1) {
+                    res = url.substring(isHttps ? 8 : 7, a);
+                } else {
+                    res = url.substring(isHttps ? 8 : 7);
+                }
+
+                res = "GetIconServlet?type=" + (isHttps ? 2 : 1) + "&domain=" + res;
+            } else {
+                res = "wd.jpg";
+            }
+            return res;
         }
     </script>
     <style>
         * {
             color: #000;
-            font-size:12px;
+            font-size: 12px;
         }
+
         html, body {
-            margin:0px;
-            padding:0px;
+            margin: 0px;
+            padding: 0px;
         }
+
         #body {
-            overflow:hidden;
+            overflow: hidden;
         }
-        #body img {
-            width:80px;
-            height:80px;
-            margin-left:auto;
-            margin-right:auto;
-        }
-        #body > div{
-            float:left;
-            width:90px;
-            height:130px;
-            text-align:center;
-            cursor:pointer;
-        }
+
+            #body img {
+                width: 80px;
+                height: 80px;
+                margin-left: auto;
+                margin-right: auto;
+            }
+
+            #body > div {
+                float: left;
+                width: 90px;
+                height: 130px;
+                text-align: center;
+                cursor: pointer;
+            }
+
         a {
             text-decoration: none;
         }
+
         #top {
-            overflow:hidden;
-            margin-top:5px;
+            overflow: hidden;
+            margin-top: 5px;
         }
+
         #btnfh {
-            width:30px;
-            height:30px;
-            margin-left:20px;
-            margin-top:5px;
-            float:left;
-            cursor:pointer;
+            width: 30px;
+            height: 30px;
+            margin-left: 20px;
+            margin-top: 5px;
+            float: left;
+            cursor: pointer;
         }
+
             #btnfh img {
-                width:100%;
-                height:100%;
+                width: 100%;
+                height: 100%;
             }
+
         #bjtb {
-            width:30px;
-            height:30px;
-            float:right;
-            margin-top:5px;
-            text-align:center;
-            border:1px solid #000;
-            margin-right:20px;
+            width: 30px;
+            height: 30px;
+            float: right;
+            margin-top: 5px;
+            text-align: center;
+            border: 1px solid #000;
+            margin-right: 20px;
         }
+
             #bjtb img {
-                margin-left:auto;
-                margin-right:auto;
-                width:26px;
-                margin-top:2px;
-                cursor:pointer;
-                height:26px;
+                margin-left: auto;
+                margin-right: auto;
+                width: 26px;
+                margin-top: 2px;
+                cursor: pointer;
+                height: 26px;
             }
+
         #bjlb {
-            width:30px;
-            height:30px;
-            float:right;
-            margin-top:5px;
-            text-align:center;
-            margin-right:20px;
+            width: 30px;
+            height: 30px;
+            float: right;
+            margin-top: 5px;
+            text-align: center;
+            margin-right: 20px;
         }
+
             #bjlb img {
-                margin-left:auto;
-                margin-right:auto;
-                width:26px;
-                margin-top:2px;
-                height:26px;
-                cursor:pointer;
+                margin-left: auto;
+                margin-right: auto;
+                width: 26px;
+                margin-top: 2px;
+                height: 26px;
+                cursor: pointer;
             }
+
         #btnsearch {
-            width:30px;
-            height:30px;
-            float:right;
-            margin-top:5px;
-            text-align:center;
-            margin-right:20px;
+            width: 30px;
+            height: 30px;
+            float: right;
+            margin-top: 5px;
+            text-align: center;
+            margin-right: 20px;
         }
+
             #btnsearch > img {
-                margin-left:auto;
-                margin-right:auto;
-                width:26px;
-                margin-top:2px;
-                height:26px;
-                cursor:pointer;
+                margin-left: auto;
+                margin-right: auto;
+                width: 26px;
+                margin-top: 2px;
+                height: 26px;
+                cursor: pointer;
             }
+
         #body2 {
-            overflow:hidden;
+            overflow: hidden;
         }
-        #body2 img {
-            width:25px;
-            height:25px;
-            float:left;
-        }
-        #body2 > div{
-            padding-left:20px;
-            height:30px;
-            line-height:30px;
-            cursor:pointer;
-        }
-            #body2 > div > div {
-                height:25px;
-                white-space:nowrap;
-                margin-left:30px;
-            }
-            #body2 > div > a > div {
+
+            #body2 img {
+                width: 25px;
                 height: 25px;
-                white-space:nowrap;
-                margin-left:30px;
+                float: left;
             }
+
+            #body2 > div {
+                padding-left: 20px;
+                height: 30px;
+                line-height: 30px;
+                cursor: pointer;
+            }
+
+                #body2 > div > div {
+                    height: 25px;
+                    white-space: nowrap;
+                    margin-left: 30px;
+                }
+
+                #body2 > div > a > div {
+                    height: 25px;
+                    white-space: nowrap;
+                    margin-left: 30px;
+                }
+
         #state {
-            height:20px;
-            line-height:20px;
-            font-size:12px;
-            padding-left:10px;
-            white-space:nowrap;
-            overflow:hidden;
+            height: 20px;
+            line-height: 20px;
+            font-size: 12px;
+            padding-left: 10px;
+            white-space: nowrap;
+            overflow: hidden;
         }
+
         #mainbody {
-            position:absolute;
-            top:67px;
-            width:100%;
-            bottom:0px;
+            position: absolute;
+            top: 67px;
+            width: 100%;
+            bottom: 0px;
         }
+
             #mainbody > div {
-                height:100%;
-                width:100%;
-                overflow-y:auto;
+                height: 100%;
+                width: 100%;
+                overflow-y: auto;
             }
+
         #sstck {
-            width:240px;
-            height:100px;
-            background:#fff;
-            border:1px solid #000;
-            -moz-border-radius:10px;
-            -webkit-border-radius:10px;
-            position:absolute;
-            top: 50%; 
+            width: 240px;
+            height: 100px;
+            background: #fff;
+            border: 1px solid #000;
+            -moz-border-radius: 10px;
+            -webkit-border-radius: 10px;
+            position: absolute;
+            top: 50%;
             left: 50%;
-            margin-top:-50px;
-            margin-left:-120px;
-            z-index:99;
-            display:none;
+            margin-top: -50px;
+            margin-left: -120px;
+            z-index: 99;
+            display: none;
         }
-        #sstckbtn > div{
-            width:80px;
-            height:25px;
-            line-height:25px;
-            text-align:center;
-            margin-left:26.66px;
-            border:1px solid #000;
-            float:left;
-            -moz-border-radius:5px;
-            -webkit-border-radius:5px;
-            cursor:pointer;
+
+        #sstckbtn > div {
+            width: 80px;
+            height: 25px;
+            line-height: 25px;
+            text-align: center;
+            margin-left: 26.66px;
+            border: 1px solid #000;
+            float: left;
+            -moz-border-radius: 5px;
+            -webkit-border-radius: 5px;
+            cursor: pointer;
         }
+
         #sstcktt {
-            height:30px;
-            line-height:30px;
-            padding-left:20px;
+            height: 30px;
+            line-height: 30px;
+            padding-left: 20px;
         }
+
         #sstckbody {
-            height:30px;
+            height: 30px;
         }
+
             #sstckbody input {
-                width:200px;
-                margin-left:20px;
+                width: 200px;
+                margin-left: 20px;
             }
     </style>
 </head>
@@ -428,12 +458,12 @@
             <img src="search.png" alt="" />
         </div>
         <div id="btnfh">
-            <img src="left.png"/>
+            <img src="left.png" />
         </div>
     </div>
     <div id="mainbody">
         <div id="body">
-         </div>
+        </div>
         <div id="body2">
         </div>
     </div>

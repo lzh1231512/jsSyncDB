@@ -29,7 +29,12 @@ namespace web_netcore.Controllers
             return View();
         }
 
-        
+        public IActionResult SocketTest()
+        {
+            return View();
+        }
+
+
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {
