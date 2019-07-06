@@ -590,7 +590,15 @@ var JssDB = function (code, dbName, serviceUrl, dbType) {
         var djs = 0;
         var isOpenWebSocket = false;
         var WebSocketObj = null;
+        var WSOpenDT = null;
         function openWebSocket(callback) {
+            var dt = new Date();
+            if (WSOpenDT &&
+                (((dt.getTime() - WSOpenDT.getTime()) * 1.0) / 1000) < 30) {
+                return;
+            }
+            WSOpenDT = dt;
+
             closeWebSocket();
             WebSocketObj = new WebSocket(WebSocketUrl);
             WebSocketObj.onopen = function (evt) {
