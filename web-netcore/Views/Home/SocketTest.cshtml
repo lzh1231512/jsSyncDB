@@ -16,7 +16,7 @@
     <meta content="black" name="apple-mobile-web-app-status-bar-style" />
     <script>
         function startWebsocket() {
-            var ws = new WebSocket("wss://lzhsb.cc/ws");
+            var ws = new WebSocket("ws://localhost:50939/ws");
             ws.onopen = function (evt) {
                 console.log("Connection open ...");
                 isOpenWebSocket = true;
@@ -34,7 +34,7 @@
                 console.log("Connection closed.");
             };
             ws.onerror = function (evt) {
-                write("Error: " + evt.data);
+                console.log("Error: " + evt.data);
             };
             window.onunload = function () {
                 ws.close();

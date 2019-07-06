@@ -72,7 +72,10 @@ namespace web_netcore.Controllers
                 {
                     clients.Add(cli);
                 }
-                await socket.ReceiveAsync(seg, CancellationToken.None);
+                while (socket.State == WebSocketState.Open)
+                {
+                    await socket.ReceiveAsync(seg, CancellationToken.None);
+                }
             }
 
         }

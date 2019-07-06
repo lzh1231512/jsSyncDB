@@ -587,14 +587,13 @@ var JssDB = function (code, dbName, serviceUrl, dbType) {
 
         var timer = null;
         var js = 0;
-        var djs = 0;
         var isOpenWebSocket = false;
         var WebSocketObj = null;
         var WSOpenDT = null;
-        function openWebSocket(callback) {
+        function openWebSocket(callback, reconnectionInterval) {
             var dt = new Date();
             if (WSOpenDT &&
-                (((dt.getTime() - WSOpenDT.getTime()) * 1.0) / 1000) < 30) {
+                (((dt.getTime() - WSOpenDT.getTime()) * 1.0) / 1000) < reconnectionInterval) {
                 return;
             }
             WSOpenDT = dt;
@@ -608,6 +607,7 @@ var JssDB = function (code, dbName, serviceUrl, dbType) {
                     DBName: DbName,
                     Code: Code
                 }));
+                download(callback);
             };
             WebSocketObj.onmessage = function (evt) {
                 isOpenWebSocket = true;
@@ -621,10 +621,21 @@ var JssDB = function (code, dbName, serviceUrl, dbType) {
                 console.log("Connection closed.");
             };
             WebSocketObj.onerror = function (evt) {
-                write("Error: " + evt.data);
+                console.log("Connection Error: " + evt.data);
             };
             $(window).on('beforeunload', closeWebSocket);
         }
+        var wsHBdt = new Date();
+        function keepWebSocketAlive() {
+            if (isOpenWebSocket) {
+                var dt = new Date();
+                if (((dt.getTime() - wsHBdt.getTime()) * 1.0) / 1000 >= 300) {
+                    WebSocketObj.send('1');
+                    wsHBdt = dt;
+                }
+            }
+        }
+
         function closeWebSocket() {
             if (isOpenWebSocket) {
                 WebSocketObj.close();
@@ -636,20 +647,19 @@ var JssDB = function (code, dbName, serviceUrl, dbType) {
         //         0        :sync successfully, but no new data
         //         -1       :uuid not match with service
         //         -9       :other error
-        this.autoSync = function (callback) {
+        this.autoSync = function (callback, reconnectionInterval) {
+            if (!reconnectionInterval)
+                reconnectionInterval = 30;
             if (timer != null) {
                 return;
             }
             if (typeof WebSocket != 'undefined') {
                 timer = window.setInterval(function () {
                     if (!isOpenWebSocket) {
-                        openWebSocket(callback);
+                        openWebSocket(callback, reconnectionInterval);
+                    } else {
+                        keepWebSocketAlive();
                     }
-                    if (djs <= 0) {
-                        djs = 5 * 60;
-                        download(callback);
-                    }
-                    djs--;
                     if (js > 0) {
                         js--;
                         return;
