@@ -4,7 +4,7 @@
     string Msg = "";
     if (cmd == "deldl")
     {
-        if (web_netcore.Commons.Exec.ExecCmd("sh", "/root/script/deldl.sh"))
+        if (web_netcore.Commons.Exec.ExecCmd("sh", "rm -rf /downloads/*"))
         {
             Msg = "deleted";
         }
