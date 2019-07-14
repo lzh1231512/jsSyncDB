@@ -4,14 +4,7 @@
     string Msg = "";
     if (cmd == "deldl")
     {
-        if (web_netcore.Commons.Exec.ExecCmd("rm", "-rf /downloads/*"))
-        {
-            Msg = "deleted";
-        }
-        else
-        {
-            Msg = "Delete failed";
-        }
+        Msg = web_netcore.Commons.Exec.ExecCmd("rm", "-rf /downloads/*");
     }
 
 

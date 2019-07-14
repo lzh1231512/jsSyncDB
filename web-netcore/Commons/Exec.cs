@@ -8,7 +8,7 @@ namespace web_netcore.Commons
 {
     public class Exec
     {
-        public static bool ExecCmd(string cmd, string arg)
+        public static string ExecCmd(string cmd, string arg)
         {
             try
             {
@@ -16,30 +16,29 @@ namespace web_netcore.Commons
                 var proc = Process.Start(psi);
                 if (proc == null)
                 {
-                    Console.WriteLine("Can not exec.");
-                    return false;
+                    return "Can not exec.";
                 }
                 else
                 {
-
+                    var res = "";
                     using (var sr = proc.StandardOutput)
                     {
                         while (!sr.EndOfStream)
                         {
-                            Console.WriteLine(sr.ReadLine());
+                            res+=(sr.ReadLine());
                         }
                         if (!proc.HasExited)
                         {
                             proc.Kill();
                         }
                     }
-                    return true;
+                    return res;
 
                 }
             }
-            catch
+            catch (Exception ex)
             {
-                return false;
+                return "error:"+ex.Message+"\r\n"+ex.StackTrace;
             }
         }
     }
