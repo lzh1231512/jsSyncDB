@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -8,37 +9,32 @@ namespace web_netcore.Commons
 {
     public class Exec
     {
-        public static string ExecCmd(string cmd, string arg)
+        public static bool DeleteFiles(string path)
         {
             try
             {
-                var psi = new ProcessStartInfo(cmd, arg) { RedirectStandardOutput = true };
-                var proc = Process.Start(psi);
-                if (proc == null)
+                foreach (var dic in (new DirectoryInfo(path)).GetDirectories())
                 {
-                    return "Can not exec.";
-                }
-                else
-                {
-                    var res = "";
-                    using (var sr = proc.StandardOutput)
+                    if (!DeleteFiles(dic.FullName))
                     {
-                        while (!sr.EndOfStream)
-                        {
-                            res+=(sr.ReadLine());
-                        }
-                        if (!proc.HasExited)
-                        {
-                            proc.Kill();
-                        }
+                        return false;
                     }
-                    return res;
-
                 }
+                foreach (FileInfo file in (new DirectoryInfo(path)).GetFiles())
+                {
+                    file.Attributes = FileAttributes.Normal;
+                    file.Delete();
+                }
+                foreach (var dic in (new DirectoryInfo(path)).GetDirectories())
+                {
+                    dic.Attributes = FileAttributes.Normal;
+                    dic.Delete();
+                }
+                return true;
             }
-            catch (Exception ex)
+            catch
             {
-                return "error:"+ex.Message+"\r\n"+ex.StackTrace;
+                return false;
             }
         }
     }
