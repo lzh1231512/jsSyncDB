@@ -32,7 +32,7 @@ namespace web_netcore.Controllers
         }
 
 
-        public IActionResult Get(string code,string pwd)
+        public IActionResult Get(string code,string pwd, string newpwd)
         {
             Response.ContentType = "text/plain;charset=utf-8";
             Response.Headers.Add("Access-Control-Allow-Origin", "*");
@@ -91,7 +91,9 @@ namespace web_netcore.Controllers
                             using (StreamWriter sr = new StreamWriter(fs))
                             {
                                 sr.WriteLine(data);
-                                sr.WriteLine(thepwd);
+                                if (string.IsNullOrEmpty(newpwd))
+                                    newpwd = thepwd;
+                                sr.WriteLine(newpwd);
                                 sr.WriteLine(0);
                                 sr.Close();
                                 fs.Close();
