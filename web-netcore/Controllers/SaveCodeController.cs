@@ -32,7 +32,7 @@ namespace web_netcore.Controllers
         }
 
 
-        public IActionResult Get(string code)
+        public IActionResult Get(string code,string pwd)
         {
             Response.ContentType = "text/plain;charset=utf-8";
             Response.Headers.Add("Access-Control-Allow-Origin", "*");
@@ -41,7 +41,9 @@ namespace web_netcore.Controllers
 
             string path = getPath(code);
             string data = "";
-            bool result = true;
+            string thepwd = "";
+            int wrongTime = 0;
+            int result = 0;
             if (System.IO.File.Exists(path))
             {
                 try
@@ -50,15 +52,58 @@ namespace web_netcore.Controllers
                     {
                         using (StreamReader sr = new StreamReader(fs))
                         {
-                            data = sr.ReadToEnd();
+                            data = sr.ReadLine();
+                            thepwd = sr.ReadLine();
+                            wrongTime = int.Parse(sr.ReadLine());
                             sr.Close();
                             fs.Close();
                         }
                     }
+                    if(thepwd!= pwd)
+                    {
+                        wrongTime++;
+                        if (wrongTime >= 5)
+                        {
+                            System.IO.File.Delete(path);
+                            result = -3;
+                        }
+                        else
+                        {
+                            using (FileStream fs = new FileStream(path, FileMode.Create, FileAccess.ReadWrite))
+                            {
+                                using (StreamWriter sr = new StreamWriter(fs))
+                                {
+                                    sr.WriteLine(data);
+                                    sr.WriteLine(thepwd);
+                                    sr.WriteLine(wrongTime);
+                                    sr.Close();
+                                    fs.Close();
+                                }
+                            }
+                            result = -2;
+                        }
+                        data = "";
+                    }
+                    else
+                    {
+                        using (FileStream fs = new FileStream(path, FileMode.Create, FileAccess.ReadWrite))
+                        {
+                            using (StreamWriter sr = new StreamWriter(fs))
+                            {
+                                sr.WriteLine(data);
+                                sr.WriteLine(thepwd);
+                                sr.WriteLine(0);
+                                sr.Close();
+                                fs.Close();
+                            }
+                        }
+                        result = 1;
+                    }
                 }
                 catch (Exception e)
                 {
-                    result = false;
+                    data = "";
+                    result = -1;
                 }
             }
             return Json(new
@@ -68,7 +113,7 @@ namespace web_netcore.Controllers
             });
         }
 
-        public IActionResult Set(string code,string data)
+        public IActionResult Set(string code,string data, string pwd)
         {
             Response.ContentType = "text/plain;charset=utf-8";
             Response.Headers.Add("Access-Control-Allow-Origin", "*");
@@ -83,7 +128,9 @@ namespace web_netcore.Controllers
                 {
                     using (StreamWriter sr = new StreamWriter(fs))
                     {
-                        sr.Write(data);
+                        sr.WriteLine(data);
+                        sr.WriteLine(pwd);
+                        sr.WriteLine("0");
                         sr.Close();
                         fs.Close();
                     }
