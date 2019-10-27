@@ -1,5 +1,5 @@
 {
-  "name": "KeepPwd",
+  "name": "KeepPwd_PWA",
   "short_name": "KeepPwd",
   "start_url": "/pwa/start/index.html",
   "display": "standalone",
