@@ -133,6 +133,12 @@
                 history.back();
             }
         });
+        document.addEventListener('visibilitychange', function () {
+            if (document.visibilityState === 'hidden') {
+                IFLock(SysState.IKey);
+            }
+            console.log(document.visibilityState);
+        });
     </script>
 </head>
 <body>
