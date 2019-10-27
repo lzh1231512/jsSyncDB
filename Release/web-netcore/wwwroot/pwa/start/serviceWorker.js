@@ -1,5 +1,5 @@
 ﻿this.addEventListener('install', function (event) {
-    var version = 'v0.2';
+    var version = 'v0.4';
     event.waitUntil(caches.delete('caches'));
     event.waitUntil(
         caches.open('caches').then(function (cache) {
