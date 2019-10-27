@@ -2,7 +2,7 @@ function initLogin(option) {
 	thePatternLockObj = new PatternLock("#patternContainer", {
         'onDraw': function (res) {
             thePatternLockObj.reset();
-            var pwd2 = $('#pwd2').val();
+            var pwd2 = $('#pwd2').val() || SysState.pwd2;
             var hasPwd2 = localStorage.getItem("hasPwd2");
             if (!hasPwd2)
                 pwd2 = "";

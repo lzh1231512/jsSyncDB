@@ -30,6 +30,7 @@
     	height:0
     },
     loginKey: null,
+    pwd2:'',
     showLock:false,
     ljcw: {
         get: function () {
@@ -57,6 +58,7 @@
                 baseDb.cleanAllData();
                 SysState.mainKey.clear();
                 SysState.loginKey = null;
+                SysState.pwd2 = '';
             }
         }
     }

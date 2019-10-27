@@ -9,6 +9,7 @@
         getloginkey(null, function (key) {
             SysState.mainKey.set(mainkey, key);
             SysState.loginKey = key;
+            SysState.pwd2 = '';
             option.onSeted();
         });
     });

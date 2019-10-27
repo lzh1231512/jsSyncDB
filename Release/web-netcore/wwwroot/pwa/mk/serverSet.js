@@ -58,6 +58,7 @@
                     localStorage.setItem('hasPwd2', pwd2 != "" ? "1" : "");
                     var mk = SysState.mainKey.get();
                     SysState.mainKey.set(mk, SysState.loginKey + pwd2);
+                    SysState.pwd2 = pwd2;
                     mAlert('操作成功', function () {
                         pageGoBack();
                     });

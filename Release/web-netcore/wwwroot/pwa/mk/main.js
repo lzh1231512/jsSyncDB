@@ -118,6 +118,7 @@
                         var mk = SysState.mainKey.get();
                         SysState.mainKey.set(mk, key + pwd2);
                         SysState.loginKey = key;
+                        SysState.pwd2 = pwd2;
                         mAlert('操作成功', function () {
                             pageGoBack();
                         });
@@ -263,6 +264,7 @@
                 } else {
                     SysState.ljcw.reset();
                     SysState.loginKey = key;
+                    SysState.pwd2 = pwd2;
                     loadPage('main');
                 }
             },

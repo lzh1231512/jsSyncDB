@@ -26,6 +26,7 @@ function Unlock() {
             } else {
                 SysState.ljcw.reset();
                 SysState.loginKey = key;
+                SysState.pwd2 = pwd2;
                 SysState.showLock = false;
                 androidCancelUnLock();
                 
