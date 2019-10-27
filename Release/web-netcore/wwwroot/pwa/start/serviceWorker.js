@@ -4,6 +4,7 @@
     event.waitUntil(
         caches.open('caches').then(function (cache) {
             return cache.addAll([
+                '../sound/kr.ogg',
                 '../pwa/android-icon-144x144.png',
                 '../pwa/android-icon-192x192.png',
                 '../pwa/android-icon-36x36.png',
