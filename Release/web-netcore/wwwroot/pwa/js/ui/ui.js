@@ -183,31 +183,20 @@ function clickSound() {
 function systemNotification(msg, failedCallback) {
     if (!failedCallback)
         failedCallback = function () { };
-
-    Notification.requestPermission(function (result) {
-        if (result === 'granted') {
-            navigator.serviceWorker.ready.then(function (registration) {
-                registration.showNotification(msg);
-            });
-        } else {
-            failedCallback();
-        }
-    });
-
-
-    //if (window.Notification && Notification.permission !== "denied") {
-    //    Notification.requestPermission(function (status) {
-    //        if (status === "granted") {
-    //            var n = new Notification('KeepPwd', { body: msg });
-    //        } else {
-    //            failedCallback();
-    //        }
-    //    });
-    //} else {
-    //    failedCallback();
-    //}
+    if (window.Notification && Notification.permission !== "denied") {
+        Notification.requestPermission(function (status) {
+            if (status === "granted") {
+                navigator.serviceWorker.ready.then(function (registration) {
+                    registration.showNotification(msg);
+                });
+            } else {
+                failedCallback();
+            }
+        });
+    } else {
+        failedCallback();
+    }
 }
-
 
 function initTitle(title, leftfun, rightfun) {
     $('#title span').html(title);

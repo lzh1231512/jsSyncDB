@@ -26,22 +26,18 @@ function loadPage(mk, option, oldPageHead, oldPageBody) {
 			CurrentPage = mk;
 			if (!oldPageHead) {
 				if (vishis.length > 0 && CurrentPageFlag) {
-					vishis[vishis.length - 1][2] = $('head > *');
+					vishis[vishis.length - 1][2] = '';
                     vishis[vishis.length - 1][3] = $('#mk_body > *');
 				}
 				CurrentPageFlag = true;
-                $('head')[0].innerHTML = '';
                 $('#mk_body')[0].innerHTML = '';
                 $('#mk_body').css('background', mkbackground);
 				if (vishis.length <= 0 || vishis[vishis.length - 1][0] != mk) {
 					vishis.push([ mk, option ]);
                 }
                 getHtml(mklst[i][1], function (res) {
-                    var h1 = res.indexOf('<head>');
-                    var h2 = res.indexOf('</head>');
                     var b1 = res.indexOf('<body>');
                     var b2 = res.indexOf('</body>');
-                    $('head')[0].innerHTML = res.substring(h1 + 6, h2);
                     $('#mk_body')[0].innerHTML = res.substring(b1 + 6, b2);
                     function initx() {
                         if ($('#sstckzzc:visible').length) {
@@ -64,8 +60,7 @@ function loadPage(mk, option, oldPageHead, oldPageBody) {
                 });
 			} else {
 				CurrentPageFlag = true;
-                $('head,#mk_body').empty();
-				$('head').append(oldPageHead);
+                $('#mk_body').empty();
                 $('#mk_body').append(oldPageBody);
                 if (mklst[i].length >= 4) {
                     var reset = eval(mklst[i][3]);
