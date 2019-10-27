@@ -1,0 +1,134 @@
+﻿
+#sstck {
+    font-size: 12px;
+    width: 240px;
+    padding-bottom: 8px;
+    background: #fff;
+    border: 1px solid #000;
+    -moz-border-radius: 10px;
+    -webkit-border-radius: 10px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin-top: -124px;
+    margin-left: -120px;
+    z-index: 199999;
+    display: none;
+    color: #000;
+}
+
+    #sstck * {
+        font-size: 12px;
+    }
+    #sstck input {
+        border: 1px solid #000;
+        background: #fff;
+        color: #000;
+    }
+#sstckbtn {
+    text-align: center;
+    overflow: hidden;
+    display: none;
+}
+
+    #sstckbtn > div {
+        margin-left: auto;
+        margin-right: auto;
+        display: inline-block;
+        overflow: hidden;
+    }
+
+        #sstckbtn > div > div {
+            width: 80px;
+            height: 25px;
+            line-height: 25px;
+            text-align: center;
+            border: 1px solid #000;
+            float: left;
+            -moz-border-radius: 5px;
+            -webkit-border-radius: 5px;
+            cursor: pointer;
+            margin-left: 10px;
+            margin-right: 10px;
+        }
+
+#sstcktt {
+    height: 30px;
+    line-height: 30px;
+    padding-left: 20px;
+}
+
+#sstckbody {
+    min-height: 30px;
+    max-height: 300px;
+    overflow-x: hidden;
+    overflow-y: auto;
+    padding-bottom: 8px;
+    padding-right: 20px;
+    padding-left: 20px;
+}
+
+    #sstckbody span {
+        text-indent: 2em;
+        display: block;
+    }
+
+    #sstckbody input {
+        width: 200px;
+        margin-top: 8px;
+    }
+
+    #sstckbody ul {
+        margin: 0px;
+        padding: 0px;
+    }
+
+    #sstckbody li {
+        list-style: none;
+        line-height: 30px;
+        height: 30px;
+        text-align: center;
+        border-top: 1px solid #000;
+    }
+
+        #sstckbody li:last-child {
+            border-bottom: 1px solid #000;
+        }
+
+#sstckzzc {
+    display: none;
+    position: absolute;
+    top: 0%;
+    left: 0%;
+    width: 100%;
+    height: 100%;
+    background-color: black;
+    z-index: 99998;
+    -moz-opacity: 0.7;
+    opacity: .70;
+    filter: alpha(opacity=70);
+}
+#sstckzzc2 {
+    display: none;
+    position: absolute;
+    top: 0%;
+    left: 0%;
+    width: 100%;
+    height: 100%;
+    background-color: black;
+    z-index: 99998;
+    -moz-opacity: 0.7;
+    opacity: .70;
+    filter: alpha(opacity=70);
+}
+#sstckdddh {
+    display: none;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin-left:-31px;
+    margin-top:-31px;
+    width: 62px;
+    height: 62px;
+    z-index: 99999;
+}

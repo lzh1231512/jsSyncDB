@@ -1,0 +1,67 @@
+﻿<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content=" initial-scale=1.0,user-scalable=no" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+    <meta content="black" name="apple-mobile-web-app-status-bar-style" />
+    <link href="../css/tck.css" rel="stylesheet" />
+    <link href="../css/all.css" rel="stylesheet" />
+    <title></title>
+    <style>
+        .item {
+            position: relative;
+            min-height: 35px;
+            line-height: 35px;
+            border-bottom: 1px solid #fff;
+        }
+
+            .item span {
+                display: inline-block;
+                width: 70px;
+                text-align: right;
+            }
+        #bluetooth {
+            width:25px;
+            height:25px;
+            float:right;
+            margin-top:5px;
+            margin-right:10px;
+        }
+    </style>
+</head>
+<body>
+    <div id="title">
+        <div id="ttleft"></div>
+        <div id="ttright"></div>
+        <span></span>
+    </div>
+    <div id="body">
+        <div class="item">
+            <span>标题:</span>
+            <input id="bt" type="text" name="" value="" />
+        </div>
+        <div class="item">
+            <span>传输方式:</span>
+            <span style="width: 40px;" id="xzws">蓝牙</span>
+            <div class="arrow-down" style="top:12px;"></div>
+        </div>
+        <div class="item">
+            <span>传输密钥:</span>
+            <input id="csmy" type="text" name="" value="" />
+        </div>
+        <div class="item">
+            <span>地址:</span>
+            <input id="dz" type="text" name="" value="" />
+            <img id="bluetooth" src="../images/bluetooth.svg"/>
+        </div>
+        <div id="div_code" class="item">
+            <span>Code:</span>
+            <input id="code" type="text" name="" value="" />
+        </div>
+        <div style="text-align: center;">
+            <div class="mybtn">
+                <div id="wc">保存</div>
+            </div>
+        </div>
+    </div>
+</body>

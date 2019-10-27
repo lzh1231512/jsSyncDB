@@ -1,0 +1,52 @@
+﻿<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content=" initial-scale=1.0,user-scalable=no" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+    <meta content="black" name="apple-mobile-web-app-status-bar-style" />
+    <link href="../css/tck.css" rel="stylesheet" />
+    <link href="../css/all.css" rel="stylesheet" />
+    <link href="../js/patternLock/patternLock.css" rel="stylesheet" />
+    <title></title>
+    <style>
+        body{
+            position:relative;
+        }
+        #div_pwd2.item {
+            position: absolute;
+            min-height: 35px;
+            line-height: 35px;
+            border-bottom: 1px solid #fff;
+            width: 100%;
+            z-index: 999;
+        }
+
+            #div_pwd2.item span {
+                display: inline-block;
+                width: 80px;
+                text-align: right;
+            }
+        #div_pattern{
+            position:relative;
+            height:100%;
+        }
+    </style>
+</head>
+<body>
+    <div id="title">
+        <div id="ttleft"></div>
+        <div id="ttright"></div>
+        <span></span>
+    </div>
+    <div id="body">
+        <div id="div_pwd2" class="item">
+            <span>二次密码:</span>
+            <input id="pwd2" type="text" name="" value="" />
+        </div>
+        <div id="div_pattern">
+            <div class="outer">
+                <div id="patternContainer"></div>
+            </div>
+        </div>
+    </div>
+</body>

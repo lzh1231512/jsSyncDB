@@ -1,0 +1,64 @@
+﻿<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content=" initial-scale=1.0,user-scalable=no" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+    <meta content="black" name="apple-mobile-web-app-status-bar-style" />
+    <link href="../css/tck.css" rel="stylesheet" />
+    <link href="../css/all.css" rel="stylesheet" />
+    <title></title>
+    <style>
+        .item {
+            position: relative;
+            min-height: 35px;
+            line-height: 35px;
+            border-bottom: 1px solid #fff;
+        }
+
+            .item span {
+                display: inline-block;
+            }
+            .item input[type='checkbox'] {
+                margin-left:20px;
+            }
+        textarea {
+            margin-left: 20px;
+            height: 60px;
+        }
+    </style>
+</head>
+<body>
+    <div id="title">
+        <div id="ttleft"></div>
+        <div id="ttright"></div>
+        <span></span>
+    </div>
+    <div id="body">
+        <div style="padding-left:30px;" class="item">
+            <span id="xzws">14位密码</span>
+            <div class="arrow-down" style="top:12px;"></div>
+        </div>
+        <div class="item">
+            <input id="c1" type="checkbox" name="" checked="checked" />
+            <span>数字</span>
+        </div>
+        <div class="item">
+            <input id="c2" type="checkbox" name="" checked="checked" />
+            <span>大写字母</span>
+        </div>
+        <div class="item">
+            <input id="c3" type="checkbox" name="" checked="checked" />
+            <span>小写字母</span>
+        </div>
+        <div class="item">
+            <input id="c4" type="checkbox" name="" />
+            <span>特殊字符:</span>
+            <input id="tszf" type="text" style="margin-left:10px;" name="" value="" />
+        </div>
+        <div style="text-align: center;">
+            <div class="mybtn">
+                <div id="qd">确定</div>
+            </div>
+        </div>
+    </div>
+</body>
