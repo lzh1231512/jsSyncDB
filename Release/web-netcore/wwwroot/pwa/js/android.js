@@ -49,8 +49,9 @@ function androidStWifiWithCBCallBack(res) {
     _androidStWifiWithCB(res);
 }
 function androidActionSound() {
-    if (typeof(androidFunction)!='undefined' && androidFunction.ActionSound)
-        androidFunction.ActionSound();
+    //if (typeof(androidFunction)!='undefined' && androidFunction.ActionSound)
+    //    androidFunction.ActionSound();
+    clickSound();
 }
 function androidNoBackPage() {
     if (typeof (androidFunction) != 'undefined' && androidFunction.NoBackPage)

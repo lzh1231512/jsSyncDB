@@ -148,8 +148,6 @@ mSel = function (msg,so,callback) {
     $('#sqx').html('取消');
 }
 function initUI() {
-    var str = '<div id="sstckzzc"></div><div id="sstckzzc2"></div><img id="sstckdddh" src="../images/wait.gif" style="display:none" /><div id="sstck" style="display:none"><div id="sstcktt"></div><div id="sstckbody"><input id="gjz" type="search" name="" value="" /><span id="tcxxtx"></span><ul id="tcxzk"></ul></div><div id="sstckbtn"><div><div id="sqd">确定</div><div id="sqx">取消</div></div></div></div>';
-    $('body').append(str);
     if(SysState.UI.height){
     	var h=SysState.UI.height;
     	$('html').height(SysState.UI.height);
@@ -172,6 +170,13 @@ function initUI() {
             'background': "url('images/gd.png')",
             'background-size': "100% 100%"
         });
+    }
+}
+function clickSound() {
+    try {
+        $('#clickSound')[0].play();
+    }
+    catch (err) {
     }
 }
 function initTitle(title, leftfun, rightfun) {

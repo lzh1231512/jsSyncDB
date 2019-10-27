@@ -56,19 +56,20 @@ function IFGoBack(IKey) {
     }
     if (getCurrentPage() == 'main') {
         androidNoBackPage();
-        return;
+        return false;
     }
     var obj = $('#sstckzzc:visible');
     if (obj.length > 0) {
         obj.click();
-        return;
+        return true;
     }
     obj = $('#ttleft:visible');
     if (obj.length) {
         obj.click();
-        return;
+        return true;
     }
     androidNoBackPage();
+    return false;
 }
 
 function IFGetConnLst(IKey) {

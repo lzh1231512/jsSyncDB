@@ -122,7 +122,41 @@
             });
         }
     </script>
+    <script language="javascript">
+        history.pushState(null, null, document.URL);
+        window.addEventListener('popstate', function () {
+            if (IFGoBack(SysState.IKey)) {
+                history.pushState(null, null, document.URL);
+            } else {
+                history.back();
+            }
+        });
+    </script>
 </head>
 <body>
+    <audio src='../sound/kr.ogg' style='display:none' id='clickSound'></audio>
+    <div id="sstckzzc"></div>
+    <div id="sstckzzc2"></div>
+    <img id="sstckdddh" src="../images/wait.gif" style="display:none" />
+    <div id="sstck" style="display:none">
+        <div id="sstcktt"></div>
+        <div id="sstckbody">
+            <input id="gjz" type="search" name="" value="" />
+            <span id="tcxxtx"></span>
+            <ul id="tcxzk"></ul>
+        </div>
+        <div id="sstckbtn">
+            <div>
+                <div id="sqd">
+                    确定
+                </div>
+                <div id="sqx">
+                    取消
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="mk_body">
+    </div>
 </body>
 </html>
