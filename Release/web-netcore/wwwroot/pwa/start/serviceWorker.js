@@ -1,5 +1,5 @@
 ﻿this.addEventListener('install', function (event) {
-    var version = 'v0.4';
+    var version = 'v0.5';
     event.waitUntil(caches.delete('caches'));
     event.waitUntil(
         caches.open('caches').then(function (cache) {
@@ -27,7 +27,6 @@
                 '../pwa/favicon-32x32.png',
                 '../pwa/favicon-96x96.png',
                 '../pwa/favicon.ico',
-                '../pwa/manifest.json',
                 '../pwa/ms-icon-144x144.png',
                 '../pwa/ms-icon-150x150.png',
                 '../pwa/ms-icon-310x310.png',
