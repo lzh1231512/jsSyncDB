@@ -179,6 +179,24 @@ function clickSound() {
     catch (err) {
     }
 }
+
+function systemNotification(msg, failedCallback) {
+    if (!failedCallback)
+        failedCallback = function () { };
+    if (window.Notification && Notification.permission !== "denied") {
+        Notification.requestPermission(function (status) {
+            if (status === "granted") {
+                var n = new Notification('KeepPwd', { body: msg });
+            } else {
+                failedCallback();
+            }
+        });
+    } else {
+        failedCallback();
+    }
+}
+
+
 function initTitle(title, leftfun, rightfun) {
     $('#title span').html(title);
     if (leftfun) {

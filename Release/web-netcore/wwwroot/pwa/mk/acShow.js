@@ -15,15 +15,17 @@ function initacShow(option) {
         if (SysState.NotShowPwd) {
             androidShowPwd(pwd.pwd);
         } else {
-            if (!showpwd) {
-                $('#mm').val(pwd.pwd);
-                $('#xs').html('隐藏密码');
-                androidShowPwd(pwd.pwd);
-            } else {
-                $('#mm').val('*****************');
-                $('#xs').html('显示密码');
-            }
-            showpwd = !showpwd;
+            systemNotification(pwd.pwd, function () {
+                if (!showpwd) {
+                    $('#mm').val(pwd.pwd);
+                    $('#xs').html('隐藏密码');
+                    androidShowPwd(pwd.pwd);
+                } else {
+                    $('#mm').val('*****************');
+                    $('#xs').html('显示密码');
+                }
+                showpwd = !showpwd;
+            });
         }
     });
     $('#fs,#fs2').mClick(function () {
