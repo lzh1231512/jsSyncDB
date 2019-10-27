@@ -103,6 +103,7 @@
             initJsBridge();
             SysState.IKey = GetQueryString('IKey');
             SysState.NotShowPwd = GetQueryString('NotShowPwd');
+            SysState.NotPWA = GetQueryString('NotPWA') == 1;
             SysState.IsSupportFingerprint = GetQueryString('IsSupportFingerprint');
             if (!SysState.IKey && typeof (_theIkey) != 'undefined') {
                 SysState.IKey = _theIkey;
@@ -113,33 +114,33 @@
         });
     </script>
     <script type="text/javascript">
-        //if ('serviceWorker' in navigator) {
-        //    window.addEventListener('load', function () {
-        //        navigator.serviceWorker.register('./serviceWorker.js', { scope: './' })
-        //            .then(function (registration) {
-        //                console.log('ServiceWorker registration successful with scope: ', registration.scope);
-        //            })
-        //            .catch(function (err) {
-        //                console.log('ServiceWorker registration failed: ', err);
-        //            });
-        //    });
-        //}
-    </script>
-    <script language="javascript">
-        history.pushState(null, null, document.URL);
-        window.addEventListener('popstate', function () {
-            if (IFGoBack(SysState.IKey)) {
-                history.pushState(null, null, document.URL);
-            } else {
-                history.back();
+        if (!GetQueryString('NotPWA')) {
+            if ('serviceWorker' in navigator) {
+                window.addEventListener('load', function () {
+                    navigator.serviceWorker.register('./serviceWorker.js', { scope: './' })
+                        .then(function (registration) {
+                            console.log('ServiceWorker registration successful with scope: ', registration.scope);
+                        })
+                        .catch(function (err) {
+                            console.log('ServiceWorker registration failed: ', err);
+                        });
+                });
             }
-        });
-        document.addEventListener('visibilitychange', function () {
-            if (document.visibilityState === 'hidden') {
-                IFLock(SysState.IKey);
-            }
-            console.log(document.visibilityState);
-        });
+            history.pushState(null, null, document.URL);
+            window.addEventListener('popstate', function () {
+                if (IFGoBack(SysState.IKey)) {
+                    history.pushState(null, null, document.URL);
+                } else {
+                    history.back();
+                }
+            });
+            document.addEventListener('visibilitychange', function () {
+                if (document.visibilityState === 'hidden') {
+                    IFLock(SysState.IKey);
+                }
+                console.log(document.visibilityState);
+            });
+        }
     </script>
 </head>
 <body>
