@@ -1,0 +1,40 @@
+﻿@{
+    Layout = null;
+    var cmd = ViewBag.cmd as string;
+    string Msg = "";
+    if (cmd == "deldl")
+    {
+        if (web_netcore.Commons.Exec.DeleteFiles("/downloads"))
+        {
+            Msg = "deleted";
+        }
+        else
+        {
+            Msg = "Delete failed";
+        }
+    }
+
+
+
+}
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+    <title>keepPwd</title>
+    <meta http-equiv="pragma" content="no-cache">
+    <meta http-equiv="cache-control" content="no-cache">
+    <meta http-equiv="expires" content="0">
+    <meta name="viewport" content=" initial-scale=1.0,user-scalable=no" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+    <meta content="black" name="apple-mobile-web-app-status-bar-style" />
+</head>
+
+<body>
+    <a href="https://gitee.com/lzhenhi/keepPwd/blob/master/Release/KeepPwd2.1.apk">KeepPwd2.1.apk</a><br /><br />
+    <div>
+        @Msg
+    </div>
+</body>
+</html>
