@@ -3,14 +3,8 @@
     <TargetFramework>net8.0</TargetFramework>
     <AspNetCoreHostingModel>InProcess</AspNetCoreHostingModel>
     <RootNamespace>web_netcore</RootNamespace>
-	<RazorCompileOnBuild>false</RazorCompileOnBuild>
-	<RazorCompileOnPublish>false</RazorCompileOnPublish>
-	<UseRazorSourceGenerator>false</UseRazorSourceGenerator>
   </PropertyGroup>
   <ItemGroup>
-	<PackageReference Include="Microsoft.AspNetCore.App" />
-	<PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="8.0.4" />
-    <PackageReference Include="Microsoft.AspNetCore.Razor.Design" Version="2.2.0" PrivateAssets="All" />
     <PackageReference Include="Myrmec" Version="1.2.0" />
     <PackageReference Include="System.Data.SQLite" Version="1.0.111" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="8.0.2" />

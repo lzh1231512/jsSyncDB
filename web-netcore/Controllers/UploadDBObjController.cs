@@ -11,9 +11,9 @@ namespace web_netcore.Controllers
 {
     public class UploadDBObjController : Controller
     {
-        private readonly IHostingEnvironment _hostingEnvironment;
+        private readonly IWebHostEnvironment _hostingEnvironment;
 
-        public UploadDBObjController(IHostingEnvironment hostingEnvironment)
+        public UploadDBObjController(IWebHostEnvironment hostingEnvironment)
         {
             _hostingEnvironment = hostingEnvironment;
         }
@@ -25,11 +25,6 @@ namespace web_netcore.Controllers
             filePath = _hostingEnvironment.WebRootPath.TrimEnd('\\', '/')
                 + "/" + filePath.TrimEnd('\\', '/') + "/";
             System.IO.Directory.CreateDirectory(filePath);
-
-            Response.ContentType = "text/plain;charset=utf-8";
-            Response.Headers.Add("Access-Control-Allow-Origin", "*");
-            Response.Headers.Add("Access-Control-Allow-Methods", "POST");
-            Response.Headers.Add("Access-Control-Allow-Headers", "x-requested-with,content-type");
 
             String ml = filePath + "/" + code + "/";
             System.IO.Directory.CreateDirectory(ml);

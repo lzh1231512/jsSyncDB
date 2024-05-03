@@ -16,9 +16,9 @@ namespace web_netcore.Controllers
     public class GetIconServletController : Controller
     {
 
-        private readonly IHostingEnvironment _hostingEnvironment;
+        private readonly IWebHostEnvironment _hostingEnvironment;
 
-        public GetIconServletController(IHostingEnvironment hostingEnvironment)
+        public GetIconServletController(IWebHostEnvironment hostingEnvironment)
         {
             _hostingEnvironment = hostingEnvironment;
         }
@@ -45,7 +45,6 @@ namespace web_netcore.Controllers
             }
             
             Response.ContentType = "image/x-icon";
-            Response.Headers.Add("expires", "Fri Feb 01 2999 00:00:00 GMT+0800");
             return File("~/" + Configs.tempPath + "/" + domain + ".ico", "image/x-icon");
         }
 

@@ -15,7 +15,7 @@ namespace web_netcore.Controllers
     public class WebSocketHandler
     {
         [JsonObject(MemberSerialization.OptOut)]
-        public class client
+        public class Client
         {
             public string DBName { set; get; }
             public string Code { set; get; }
@@ -24,7 +24,7 @@ namespace web_netcore.Controllers
             public WebSocket socket { set; get; }
         }
 
-        static List<client> clients = new List<client>();
+        static List<Client> clients = new List<Client>();
 
         static void clearClients()
         {
@@ -37,7 +37,7 @@ namespace web_netcore.Controllers
         public static async Task sendMsg(string DBName,string Code)
         {
             clearClients();
-            List<client> clis;
+            List<Client> clis;
             lock (clients)
             {
                 clis = clients.Where(f => f.DBName == DBName && f.Code == Code).ToList();
@@ -66,7 +66,7 @@ namespace web_netcore.Controllers
                 var seg = new ArraySegment<byte>(buffer);
                 var incoming = await socket.ReceiveAsync(seg, CancellationToken.None);
                 string receivemsg = Encoding.UTF8.GetString(buffer, 0, incoming.Count);
-                var cli = JsonConvert.DeserializeObject<client>(receivemsg);
+                var cli = JsonConvert.DeserializeObject<Client>(receivemsg);
                 cli.socket = socket;
                 lock (clients)
                 {
@@ -88,8 +88,7 @@ namespace web_netcore.Controllers
         {
             var webSocketOptions = new WebSocketOptions()
             {
-                KeepAliveInterval = TimeSpan.FromSeconds(120),
-                ReceiveBufferSize = 4 * 1024
+                KeepAliveInterval = TimeSpan.FromSeconds(120)
             };
             app.UseWebSockets(webSocketOptions);
             app.Use(WebSocketHandler.Acceptor);

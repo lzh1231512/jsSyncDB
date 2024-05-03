@@ -44,7 +44,7 @@ namespace web_netcore.Commons
                 }
                 return conn;
             }
-            catch (Exception e)
+            catch
             {
             }
             return null;
@@ -79,7 +79,7 @@ namespace web_netcore.Commons
                     GC.Collect();
                     GC.WaitForPendingFinalizers();
                 }
-                catch (Exception e)
+                catch
                 {
                 }
             }
@@ -109,7 +109,7 @@ namespace web_netcore.Commons
                 
                 return res;
             }
-            catch (Exception e)
+            catch
             {
                 return 0;
             }
@@ -123,7 +123,7 @@ namespace web_netcore.Commons
                     GC.Collect();
                     GC.WaitForPendingFinalizers();
                 }
-                catch (Exception e)
+                catch
                 {
                 }
             }
@@ -165,7 +165,7 @@ namespace web_netcore.Commons
                     GC.Collect();
                     GC.WaitForPendingFinalizers();
                 }
-                catch (Exception e)
+                catch
                 {
                 }
             }
@@ -279,7 +279,7 @@ namespace web_netcore.Commons
                     GC.Collect();
                     GC.WaitForPendingFinalizers();
                 }
-                catch (Exception e)
+                catch
                 {
                 }
             }
@@ -314,7 +314,7 @@ namespace web_netcore.Commons
                     GC.Collect();
                     GC.WaitForPendingFinalizers();
                 }
-                catch (Exception e)
+                catch
                 {
                 }
             }
@@ -349,7 +349,7 @@ namespace web_netcore.Commons
                     GC.Collect();
                     GC.WaitForPendingFinalizers();
                 }
-                catch (Exception e)
+                catch
                 {
                 }
             }

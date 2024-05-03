@@ -11,7 +11,7 @@ namespace web_netcore.Commons
 {
     public class ImageDownloader
     {
-        class img
+        class Img
         {
             public string url { set; get; }
             public string savepath { set; get; }
@@ -19,8 +19,8 @@ namespace web_netcore.Commons
             public int status { set; get; }
         }
 
-        static Dictionary<string, img>
-            tasks = new Dictionary<string, img>();
+        static Dictionary<string, Img>
+            tasks = new Dictionary<string, Img>();
 
         static int theadCount = 5;
 
@@ -30,7 +30,7 @@ namespace web_netcore.Commons
             {
                 if (!tasks.ContainsKey(url))
                 {
-                    tasks.Add(url, new img()
+                    tasks.Add(url, new Img()
                     {
                         url = url,
                         savepath = savepath,
@@ -65,7 +65,7 @@ namespace web_netcore.Commons
         {
             try
             {
-                var data = (KeyValuePair<string, img>)a;
+                var data = (KeyValuePair<string, Img>)a;
                 var url = data.Key;
                 var savepath = data.Value.savepath;
                 Console.WriteLine("start download:" + url);
@@ -161,7 +161,7 @@ namespace web_netcore.Commons
                     results.Contains("png") ||
                     results.Contains("gif");
             }
-            catch (Exception e)
+            catch
             {
                 return false;
             }

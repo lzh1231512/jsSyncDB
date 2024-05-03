@@ -11,9 +11,9 @@ namespace web_netcore.Controllers
 {
     public class SaveCodeController : Controller
     {
-        private readonly IHostingEnvironment _hostingEnvironment;
+        private readonly IWebHostEnvironment _hostingEnvironment;
 
-        public SaveCodeController(IHostingEnvironment hostingEnvironment)
+        public SaveCodeController(IWebHostEnvironment hostingEnvironment)
         {
             _hostingEnvironment = hostingEnvironment;
         }
@@ -34,11 +34,6 @@ namespace web_netcore.Controllers
 
         public IActionResult Get(string code,string pwd, string newpwd)
         {
-            Response.ContentType = "text/plain;charset=utf-8";
-            Response.Headers.Add("Access-Control-Allow-Origin", "*");
-            Response.Headers.Add("Access-Control-Allow-Methods", "POST");
-            Response.Headers.Add("Access-Control-Allow-Headers", "x-requested-with,content-type");
-
             string path = getPath(code);
             string data = "";
             string thepwd = "";
@@ -102,7 +97,7 @@ namespace web_netcore.Controllers
                         result = 1;
                     }
                 }
-                catch (Exception e)
+                catch
                 {
                     data = "";
                     result = -1;
@@ -117,11 +112,6 @@ namespace web_netcore.Controllers
 
         public IActionResult Set(string code,string data, string pwd)
         {
-            Response.ContentType = "text/plain;charset=utf-8";
-            Response.Headers.Add("Access-Control-Allow-Origin", "*");
-            Response.Headers.Add("Access-Control-Allow-Methods", "POST");
-            Response.Headers.Add("Access-Control-Allow-Headers", "x-requested-with,content-type");
-
             string path = getPath(code);
             bool result = true;
             try
@@ -138,7 +128,7 @@ namespace web_netcore.Controllers
                     }
                 }
             }
-            catch (Exception e)
+            catch
             {
                 result = false;
             }
