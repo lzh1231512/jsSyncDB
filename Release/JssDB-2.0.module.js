@@ -22,8 +22,8 @@ class w {
       let i;
       try {
         i = s.transaction(this.storeName, "readonly");
-      } catch (u) {
-        r(u);
+      } catch (d) {
+        r(d);
         return;
       }
       const c = new Array(t.length).fill(null);
@@ -35,9 +35,9 @@ class w {
       }, i.onabort = () => {
         n || (n = !0, r(i.error ?? new Error("IndexedDB read transaction was aborted.")));
       };
-      const d = i.objectStore(this.storeName);
-      t.forEach((u, l) => {
-        const h = d.get(u);
+      const u = i.objectStore(this.storeName);
+      t.forEach((d, l) => {
+        const h = u.get(d);
         h.onsuccess = () => {
           const b = h.result;
           c[l] = b?.val ?? null;
@@ -174,15 +174,15 @@ class k {
     this.localStorage.setItem(s, a), this.metadataCache.set(t, a);
   }
   async getDB(t, e = !1, s) {
-    const a = Array.isArray(t), r = typeof e == "boolean" ? e : !1, i = typeof e == "function" ? e : s, c = a ? t : [t], n = new Array(c.length).fill(null), d = [], u = [];
+    const a = Array.isArray(t), r = typeof e == "boolean" ? e : !1, i = typeof e == "function" ? e : s, c = a ? t : [t], n = new Array(c.length).fill(null), u = [], d = [];
     c.forEach((h, b) => {
-      this.recordCache.has(h) ? n[b] = this.decodeValue(this.recordCache.get(h), r) : (d.push(h), u.push(b));
-    }), d.length > 0 && (await this.backend.getVals(d, r)).forEach((b, D) => {
-      const I = d[D];
+      this.recordCache.has(h) ? n[b] = this.decodeValue(this.recordCache.get(h), r) : (u.push(h), d.push(b));
+    }), u.length > 0 && (await this.backend.getVals(u, r)).forEach((b, D) => {
+      const I = u[D];
       if (I === void 0)
         return;
       const p = b ?? null;
-      this.recordCache.set(I, p), n[u[D]] = this.decodeValue(p, !1);
+      this.recordCache.set(I, p), n[d[D]] = this.decodeValue(p, !1);
     });
     const l = a ? n : n[0] ?? null;
     return i && (await Promise.resolve(), i(l)), l;
@@ -192,14 +192,14 @@ class k {
     typeof t == "string" ? typeof e == "function" ? (r = e, a = [{ ac: "del", key: t }]) : a = [{
       ac: "set",
       key: t,
-      val: x(e)
+      val: N(e)
     }] : (a = t, typeof e == "function" && (r = e)), await this.backend.exec(a);
     for (const i of a)
       i.ac === "del" ? this.recordCache.set(i.key, null) : this.recordCache.set(i.key, i.val);
     r?.();
   }
   setDBcmd(t, e, s) {
-    (s ?? e).push({ ac: "del", key: t }), s && s.push({ ac: "set", key: t, val: x(e) });
+    (s ?? e).push({ ac: "del", key: t }), s && s.push({ ac: "set", key: t, val: N(e) });
   }
   async clear(t) {
     await this.backend.clear();
@@ -236,16 +236,16 @@ class k {
     return t == null ? null : e && typeof t == "string" ? JSON.parse(t) : t;
   }
 }
-function x(o) {
+function N(o) {
   return typeof o == "object" ? JSON.stringify(o) : o && String(o);
 }
-const y = {}, g = {}, N = {}, S = {}, F = {};
-function $(o, t) {
+const y = {}, g = {}, x = {}, S = {}, W = {};
+function F(o, t) {
   const e = this && typeof this == "object" ? this : { uuid: o, table: t };
   return e.uuid = o, e.table = t, e;
 }
-const _ = $, v = 200, W = /* @__PURE__ */ new Map();
-class P {
+const _ = F, v = 200, $ = /* @__PURE__ */ new Map();
+class L {
   constructor(t, e) {
     this.database = t, this.tableName = e;
   }
@@ -256,7 +256,7 @@ class P {
   }
 }
 class T {
-  static databases = W;
+  static databases = $;
   db;
   writeTail = Promise.resolve();
   constructor(t, e, s) {
@@ -313,7 +313,7 @@ class T {
     this.db.set(t, e);
   }
   getTable(t) {
-    return new P(this, t);
+    return new L(this, t);
   }
   async applyOperations(t, e) {
     if (t.length !== e.length)
@@ -321,42 +321,42 @@ class T {
     if (e.length === 0)
       return;
     const s = /* @__PURE__ */ new Map();
-    e.forEach((d, u) => {
-      if (!this.checkFormat(d))
+    e.forEach((u, d) => {
+      if (!this.checkFormat(u))
         throw new Error("Invalid legacy object. Register its table model first.");
-      s.delete(d.uuid), s.set(d.uuid, { isDelete: t[u] === 1, object: H(d) });
+      s.delete(u.uuid), s.set(u.uuid, { isDelete: t[d] === 1, object: q(u) });
     });
-    const a = [...s.values()], r = await this.readObjects(a.map(({ object: d }) => d.uuid)), i = /* @__PURE__ */ new Map();
-    r.forEach((d) => {
-      d && this.checkFormat(d) && i.set(d.uuid, d);
+    const a = [...s.values()], r = await this.readObjects(a.map(({ object: u }) => u.uuid)), i = /* @__PURE__ */ new Map();
+    r.forEach((u) => {
+      u && this.checkFormat(u) && i.set(u.uuid, u);
     });
     const c = /* @__PURE__ */ new Map();
-    for (const { object: d } of a)
-      c.has(d.table) || c.set(d.table, await this.loadTableIndex(d.table));
-    for (const d of i.values())
-      c.has(d.table) || c.set(d.table, await this.loadTableIndex(d.table));
-    for (const { isDelete: d, object: u } of a) {
-      const l = i.get(u.uuid);
+    for (const { object: u } of a)
+      c.has(u.table) || c.set(u.table, await this.loadTableIndex(u.table));
+    for (const u of i.values())
+      c.has(u.table) || c.set(u.table, await this.loadTableIndex(u.table));
+    for (const { isDelete: u, object: d } of a) {
+      const l = i.get(d.uuid);
       if (l) {
         const h = c.get(l.table);
         h.entries = h.entries.filter((b) => b.u !== l.uuid);
       }
-      d || c.get(u.table).entries.push(this.createIndexItem(u));
+      u || c.get(d.table).entries.push(this.createIndexItem(d));
     }
     const n = [];
-    for (const { isDelete: d, object: u } of a)
-      if (d)
-        this.db.setDBcmd(u.uuid, n);
+    for (const { isDelete: u, object: d } of a)
+      if (u)
+        this.db.setDBcmd(d.uuid, n);
       else {
-        const l = this.viewModelToEntity(u);
-        this.db.setDBcmd(u.uuid, l, n);
+        const l = this.viewModelToEntity(d);
+        this.db.setDBcmd(d.uuid, l, n);
       }
-    for (const d of c.values())
-      this.writeTableIndex(d, n);
+    for (const u of c.values())
+      this.writeTableIndex(u, n);
     await this.db.setDB(n);
-    for (const { isDelete: d, object: u } of a) {
-      const l = i.get(u.uuid) ?? null;
-      await this.emitModelEvent(u, l, d);
+    for (const { isDelete: u, object: d } of a) {
+      const l = i.get(d.uuid) ?? null;
+      await this.emitModelEvent(d, l, u);
     }
   }
   async readObject(t) {
@@ -382,15 +382,15 @@ class T {
       const b = this.entityToViewModel(h, i[l] ?? "");
       b?.table === t && V(b, e.filters) && n.push(b);
     }
-    const d = Math.max(e.skip, 0), u = e.take > 0 ? d + e.take : void 0;
-    return n.slice(d, u);
+    const u = Math.max(e.skip, 0), d = e.take > 0 ? u + e.take : void 0;
+    return n.slice(u, d);
   }
   async loadTableIndex(t) {
     const e = await this.db.getDB("table." + t, !0), s = Array.isArray(e) ? e : [], a = s.map((n) => n.r).filter((n) => typeof n == "string"), r = a.length > 0 ? await this.db.getDB(a, !1) : [], i = [], c = [];
-    return s.forEach((n, d) => {
+    return s.forEach((n, u) => {
       if (!n || typeof n.r != "string")
         return;
-      const u = r[d], l = J(u ?? null, t, !!(y[t] && y[t] !== "uuid"), N[t]), h = {
+      const d = r[u], l = J(d ?? null, t, !!(y[t] && y[t] !== "uuid"), x[t]), h = {
         r: n.r,
         l: l.length,
         s: l.length ? m(l[0], t) : n.s,
@@ -401,7 +401,7 @@ class T {
     }), { table: t, buckets: i, entries: c };
   }
   selectBuckets(t, e, s) {
-    const a = y[t] ?? "uuid", r = s.find(([n, d]) => n === a && d !== "con" && d !== "em" && d !== "ne");
+    const a = y[t] ?? "uuid", r = s.find(([n, u]) => n === a && u !== "con" && u !== "em" && u !== "ne");
     if (!r || r[2] === void 0 || r[2] === null)
       return [...e];
     const [, i, c] = r;
@@ -409,12 +409,12 @@ class T {
   }
   writeTableIndex(t, e) {
     const { table: s } = t, r = (y[s] ?? "uuid") !== "uuid";
-    t.entries.sort((n, d) => f(m(n, s), m(d, s)));
+    t.entries.sort((n, u) => f(m(n, s), m(u, s)));
     const i = [];
     for (let n = 0; n < t.entries.length; n += v)
       i.push(t.entries.slice(n, n + v));
-    const c = i.map((n, d) => {
-      const l = t.buckets[d]?.r ?? `r${this.nextIndexIdentity()}`, h = n[0], b = n[n.length - 1], D = {
+    const c = i.map((n, u) => {
+      const l = t.buckets[u]?.r ?? `r${this.nextIndexIdentity()}`, h = n[0], b = n[n.length - 1], D = {
         r: l,
         l: n.length,
         s: m(h, s),
@@ -428,7 +428,7 @@ class T {
   }
   createIndexItem(t) {
     const e = y[t.table] ?? "uuid";
-    return N[t.table] === "int" ? { u: t.uuid, ...e === "uuid" ? {} : { i: parseInt(String(t[e]), 10) } } : { u: t.uuid, ...e === "uuid" ? {} : { i: t[e] } };
+    return x[t.table] === "int" ? { u: t.uuid, ...e === "uuid" ? {} : { i: parseInt(String(t[e]), 10) } } : { u: t.uuid, ...e === "uuid" ? {} : { i: t[e] } };
   }
   viewModelToEntity(t) {
     const e = t.table, s = this.getTableIdentity(e), a = S[e];
@@ -448,10 +448,10 @@ class T {
     if (typeof t == "string") {
       const c = t.indexOf(",");
       if (c > 0 && /^\d+$/.test(t.slice(0, c))) {
-        const d = this.getTableName(t.slice(0, c)), u = S[d];
-        if (!d || !u)
+        const u = this.getTableName(t.slice(0, c)), d = S[u];
+        if (!u || !d)
           throw new Error(`No entity transformation is registered for table index "${t.slice(0, c)}".`);
-        return { ...u.entityToViewModel(t.slice(c + 1)), uuid: e, table: d };
+        return { ...d.entityToViewModel(t.slice(c + 1)), uuid: e, table: u };
       }
       const n = JSON.parse(t);
       return this.entityToViewModel(n, e);
@@ -496,12 +496,12 @@ class T {
     s.push(e), this.db.set("indexidentityRe", s);
   }
   async emitModelEvent(t, e, s) {
-    const a = F[t.table];
+    const a = W[t.table];
     s && e && a?.onDelete ? await a.onDelete(e) : !s && a?.onSave && await a.onSave(e, t);
   }
   parseReadArguments(t, e, s, a) {
     let r = typeof t == "function" ? void 0 : t, i = typeof e == "number" ? e : 0, c = typeof s == "number" ? s : 0, n = a;
-    return typeof t == "function" ? (n = t, r = void 0) : typeof e == "function" ? (n = e, i = 0, c = 0) : typeof s == "function" && (n = s, c = 0), { filters: L(r), skip: i, take: c, callback: n };
+    return typeof t == "function" ? (n = t, r = void 0) : typeof e == "function" ? (n = e, i = 0, c = 0) : typeof s == "function" && (n = s, c = 0), { filters: P(r), skip: i, take: c, callback: n };
   }
   serializeWrite(t) {
     const e = this.writeTail.then(t);
@@ -516,7 +516,7 @@ class T {
     ), t;
   }
 }
-function L(o) {
+function P(o) {
   if (!o)
     return [];
   const t = o;
@@ -561,7 +561,7 @@ function f(o, t) {
   return Number.isFinite(e) && Number.isFinite(s) ? e < s ? -1 : 1 : String(o) < String(t) ? -1 : 1;
 }
 function m(o, t) {
-  return y[t] && y[t] !== "uuid" ? o.i : N[t] === "int" ? Number(o.u) : o.u;
+  return y[t] && y[t] !== "uuid" ? o.i : x[t] === "int" ? Number(o.u) : o.u;
 }
 function J(o, t, e, s) {
   if (!o)
@@ -608,10 +608,10 @@ function R(o) {
   const t = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
   return o < t.length ? t[o] : t[Math.floor(o / t.length)] + t[o % t.length];
 }
-function H(o) {
+function q(o) {
   return JSON.parse(JSON.stringify(o));
 }
-class q {
+class H {
   async upload(t, e) {
     const s = new URLSearchParams();
     for (const [r, i] of Object.entries(e))
@@ -621,17 +621,17 @@ class q {
       headers: { "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8" },
       body: s
     });
-    return j(a);
+    return O(a);
   }
   async download(t, e) {
     const s = new URL(t, globalThis.location?.href ?? "http://localhost/");
     for (const [r, i] of Object.entries(e))
       s.searchParams.set(r, String(i));
     const a = await fetch(s);
-    return j(a);
+    return O(a);
   }
 }
-async function j(o) {
+async function O(o) {
   if (!o.ok)
     throw new Error(`Sync request failed with HTTP ${o.status}.`);
   return o.json();
@@ -661,8 +661,10 @@ class A {
   autoUploadBusy = !1;
   autoRestoreBusy = !1;
   autoDownloadBusy = !1;
+  syncLifecycleListeners = /* @__PURE__ */ new Set();
+  syncOperationSequence = 0;
   constructor(t, e, s, a, r = {}) {
-    this.code = t, this.databaseName = e, this.serviceUrl = E(s), this.database = r.database ?? T.get(`${e}_${t}`, a, r.dbOptions), this.transport = r.transport ?? new q(), this.transferLimit = r.transferLimit ?? K, this.uuidFactory = r.uuidFactory ?? Y, this.disabledTables = new Set(r.disableSyncTables ?? []);
+    this.code = t, this.databaseName = e, this.serviceUrl = E(s), this.database = r.database ?? T.get(`${e}_${t}`, a, r.dbOptions), this.transport = r.transport ?? new H(), this.transferLimit = r.transferLimit ?? K, this.uuidFactory = r.uuidFactory ?? Y, this.disabledTables = new Set(r.disableSyncTables ?? []);
   }
   static get(t, e, s, a, r) {
     const i = `${t}_${e}`, c = this.instances.get(i);
@@ -701,33 +703,23 @@ class A {
     return this.withCallback(r, a);
   }
   async restore(t) {
-    if (this.restoreBusy) return this.withCallback(Promise.resolve(-2), t);
-    this.restoreBusy = !0;
-    const e = this.restoreCore();
-    return this.withCallback(e.finally(() => {
-      this.restoreBusy = !1;
-    }), t);
+    return this.restoreWithSource(t, "manual");
   }
   async upload(t) {
-    if (this.uploadBusy || this.restoreBusy) return this.withCallback(Promise.resolve(-3), t);
-    this.uploadBusy = !0;
-    const e = this.uploadCore();
-    return this.withCallback(e.finally(() => {
-      this.uploadBusy = !1;
-    }), t);
+    return this.uploadWithSource(t, "manual");
   }
   async download(t) {
-    if (this.downloadBusy || this.restoreBusy) return this.withCallback(Promise.resolve(-2), t);
-    this.downloadBusy = !0;
-    const e = this.downloadCore();
-    return this.withCallback(e.finally(() => {
-      this.downloadBusy = !1;
-    }), t);
+    return this.downloadWithSource(t, "manual");
   }
   async sync(t) {
     this.isWait = -1;
-    const e = this.syncCore();
+    const e = this.runTrackedOperation("sync", "manual", () => this.syncCore());
     return this.withCallback(e, t);
+  }
+  onSyncEvent(t) {
+    return this.syncLifecycleListeners.add(t), () => {
+      this.syncLifecycleListeners.delete(t);
+    };
   }
   autoSync(t, e = 30) {
     this.autoTimer === null && (this.isWait = 0, this.autoRetrySeconds = 0, this.autoUploadBusy = !1, this.autoRestoreBusy = !1, this.autoDownloadBusy = !1, this.autoTimer = setInterval(() => {
@@ -773,7 +765,7 @@ class A {
     let t = !1;
     try {
       for (; ; ) {
-        const e = this.database.get("tempUploadData", !0), s = e?.map(({ event: u }) => u) ?? await this.database.dbRead("mainSync.Temp", null, 0, this.transferLimit);
+        const e = this.database.get("tempUploadData", !0), s = e?.map(({ event: d }) => d) ?? await this.database.dbRead("mainSync.Temp", null, 0, this.transferLimit);
         if (s.length === 0)
           return this.clearUploadCheckpoint(), this.hasNewData = !1, 1;
         const a = e ?? await this.makeUploadSnapshot(s), r = this.database.get("uploadUUID") || this.uuidFactory();
@@ -781,7 +773,7 @@ class A {
         const i = await this.transport.upload(this.endpoint("UploadDBObj"), {
           Code: this.code,
           DBName: this.databaseName,
-          Data: JSON.stringify(a.map(({ wire: u }) => u)),
+          Data: JSON.stringify(a.map(({ wire: d }) => d)),
           uuid: this.database.get("uuid") ?? "",
           localUUID: this.getLocalUuid(),
           uploadUUID: r,
@@ -790,18 +782,18 @@ class A {
         });
         if (i.status === -2) {
           if (t) return -2;
-          const u = await this.restoreFrom(i.lastId ?? 0);
-          if (u !== 1) return u;
+          const d = await this.restoreFrom(i.lastId ?? 0);
+          if (d !== 1) return d;
           t = !0, this.clearUploadCheckpoint();
           continue;
         }
         if (i.status !== 1) return i.status || -9;
         i.uuid && !this.database.get("uuid") && this.database.set("uuid", i.uuid);
-        const c = i.data ?? [], n = new Set(c.map((u) => u.objuuid));
-        if (a.some(({ event: u }) => !n.has(u.objuuid))) return -9;
-        const d = this.database.get("localids", !0) ?? {};
-        for (const u of c) d[`s${u.id}`] = 1;
-        this.database.set("localids", d), await this.database.dbDeleteObj(a.map(({ event: u }) => u)), this.clearUploadCheckpoint();
+        const c = i.data ?? [], n = new Set(c.map((d) => d.objuuid));
+        if (a.some(({ event: d }) => !n.has(d.objuuid))) return -9;
+        const u = this.database.get("localids", !0) ?? {};
+        for (const d of c) u[`s${d.id}`] = 1;
+        this.database.set("localids", u), await this.database.dbDeleteObj(a.map(({ event: d }) => d)), this.clearUploadCheckpoint();
       }
     } catch {
       return -9;
@@ -810,7 +802,7 @@ class A {
   async makeUploadSnapshot(t) {
     const e = await this.database.dbReadObjs(t.map(({ objuuid: s }) => s));
     return t.map((s, a) => {
-      const r = e[a] ? O(e[a]) : null;
+      const r = e[a] ? j(e[a]) : null;
       return {
         event: s,
         wire: {
@@ -843,21 +835,21 @@ class A {
         if (r.length === 0) return t.length > 0 ? t : 1;
         if (Number(r[r.length - 1].id) < e) return -9;
         const i = this.database.get("localids", !0) ?? {}, c = [], n = [];
-        for (const u of r) {
-          const l = i[`s${u.id}`] === 1;
-          l && delete i[`s${u.id}`];
-          const h = Z(u.data, u.objuuid);
-          !l && h && (n.push(h), c.push(u.isDelete === 1 ? 1 : 0)), n.push(M(u.id, u.objuuid, u.isDelete)), c.push(0), t.push({
-            ...M(u.id, u.objuuid, u.isDelete),
+        for (const d of r) {
+          const l = i[`s${d.id}`] === 1;
+          l && delete i[`s${d.id}`];
+          const h = Z(d.data, d.objuuid);
+          !l && h && (n.push(h), c.push(d.isDelete === 1 ? 1 : 0)), n.push(M(d.id, d.objuuid, d.isDelete)), c.push(0), t.push({
+            ...M(d.id, d.objuuid, d.isDelete),
             fromLocal: l,
             ...h ? { data: h } : {}
           });
         }
-        for (const u of a.delIds ?? [])
-          n.push({ uuid: String(u), table: "mainSync" }), c.push(1);
+        for (const d of a.delIds ?? [])
+          n.push({ uuid: String(d), table: "mainSync" }), c.push(1);
         await this.database.dbOpObjs(c, n), this.database.set("localids", i), this.database.set("index", Number(r[r.length - 1].id));
-        const d = Number(r[r.length - 1].id);
-        if (d >= Number(a.maxId ?? d)) return t;
+        const u = Number(r[r.length - 1].id);
+        if (u >= Number(a.maxId ?? u)) return t;
       }
     } catch {
       return -9;
@@ -901,16 +893,76 @@ class A {
         id: Number(s.uuid),
         objuuid: s.objuuid,
         isDelete: Number(s.isDelete),
-        data: JSON.stringify(e[a] ? O(e[a]) : null)
+        data: JSON.stringify(e[a] ? j(e[a]) : null)
       }
     }));
   }
   async syncCore() {
     if (this.restoreSeek() >= 0) {
-      const e = await this.restore();
+      const e = await this.executeRestore();
       if (e !== 1) return e;
     }
-    return await this.upload() !== 1 ? -9 : this.download();
+    return await this.executeUpload() !== 1 ? -9 : this.executeDownload();
+  }
+  async restoreWithSource(t, e) {
+    if (this.restoreBusy) return this.withCallback(Promise.resolve(-2), t);
+    const s = this.runTrackedOperation("restore", e, () => this.executeRestore());
+    return this.withCallback(s, t);
+  }
+  async uploadWithSource(t, e) {
+    if (this.uploadBusy || this.restoreBusy) return this.withCallback(Promise.resolve(-3), t);
+    const s = this.runTrackedOperation("upload", e, () => this.executeUpload());
+    return this.withCallback(s, t);
+  }
+  async downloadWithSource(t, e) {
+    if (this.downloadBusy || this.restoreBusy) return this.withCallback(Promise.resolve(-2), t);
+    const s = this.runTrackedOperation("download", e, () => this.executeDownload());
+    return this.withCallback(s, t);
+  }
+  async executeRestore() {
+    if (this.restoreBusy) return -2;
+    this.restoreBusy = !0;
+    try {
+      return await this.restoreCore();
+    } finally {
+      this.restoreBusy = !1;
+    }
+  }
+  async executeUpload() {
+    if (this.uploadBusy || this.restoreBusy) return -3;
+    this.uploadBusy = !0;
+    try {
+      return await this.uploadCore();
+    } finally {
+      this.uploadBusy = !1;
+    }
+  }
+  async executeDownload() {
+    if (this.downloadBusy || this.restoreBusy) return -2;
+    this.downloadBusy = !0;
+    try {
+      return await this.downloadCore();
+    } finally {
+      this.downloadBusy = !1;
+    }
+  }
+  async runTrackedOperation(t, e, s) {
+    const a = String(++this.syncOperationSequence);
+    this.emitSyncEvent({ phase: "start", id: a, operation: t, source: e });
+    try {
+      const r = await s();
+      return this.emitSyncEvent({ phase: "end", id: a, operation: t, source: e, result: r }), r;
+    } catch (r) {
+      throw this.emitSyncEvent({ phase: "end", id: a, operation: t, source: e, error: r }), r;
+    }
+  }
+  emitSyncEvent(t) {
+    for (const e of [...this.syncLifecycleListeners])
+      try {
+        e(t);
+      } catch (s) {
+        console.error("Sync lifecycle listener failed.", s);
+      }
   }
   autoSocketTick(t, e) {
     const s = this.autoSocket;
@@ -948,10 +1000,10 @@ class A {
           s.close();
           return;
         }
-        this.download(t);
+        this.downloadWithSource(t, "auto");
       }
     }, s.onmessage = (a) => {
-      this.autoSocket === s && a.data === "1" && this.download(t);
+      this.autoSocket === s && a.data === "1" && this.downloadWithSource(t, "auto");
     }, s.onclose = () => {
       this.autoSocket === s && (this.autoSocket = null);
     }, s.onerror = (a) => {
@@ -967,7 +1019,7 @@ class A {
       this.autoRestoreBusy || this.runAutoRestore();
       return;
     }
-    this.hasNewData && !this.autoUploadBusy && this.runAutoUpload(), !this.autoDownloadBusy && (this.autoDownloadBusy = !0, this.download(t).then((e) => {
+    this.hasNewData && !this.autoUploadBusy && this.runAutoUpload(), !this.autoDownloadBusy && (this.autoDownloadBusy = !0, this.downloadWithSource(t, "auto").then((e) => {
       e === -9 && (this.autoRetrySeconds = 30);
     }).finally(() => {
       this.autoDownloadBusy = !1;
@@ -977,7 +1029,7 @@ class A {
     if (!this.autoRestoreBusy) {
       this.autoRestoreBusy = !0;
       try {
-        await this.restore() === -9 && (this.autoRetrySeconds = 30);
+        await this.restoreWithSource(void 0, "auto") === -9 && (this.autoRetrySeconds = 30);
       } finally {
         this.autoRestoreBusy = !1;
       }
@@ -987,7 +1039,7 @@ class A {
     if (!this.autoUploadBusy) {
       this.autoUploadBusy = !0;
       try {
-        await this.upload() === -9 && (this.autoRetrySeconds = 30);
+        await this.uploadWithSource(void 0, "auto") === -9 && (this.autoRetrySeconds = 30);
       } finally {
         this.autoUploadBusy = !1;
       }
@@ -998,8 +1050,8 @@ class A {
     let c = 0;
     return a.map((n) => {
       if (n.isDelete) return n;
-      const d = i[c++];
-      return d ? { ...n, data: d } : n;
+      const u = i[c++];
+      return u ? { ...n, data: u } : n;
     });
   }
   currentIndex() {
@@ -1024,7 +1076,7 @@ class A {
   }
 }
 function Q() {
-  g.mainSync = ["isDelete", "objuuid"], y.mainSync = "uuid", N.mainSync = "int", S.mainSync = {
+  g.mainSync = ["isDelete", "objuuid"], y.mainSync = "uuid", x.mainSync = "int", S.mainSync = {
     viewModelToEntity: (o) => `${Number(o.isDelete)},${String(o.objuuid)}`,
     entityToViewModel: (o) => {
       const [t, e] = String(o).split(",");
@@ -1042,7 +1094,7 @@ function X(o) {
 function Y() {
   return globalThis.crypto?.randomUUID?.() ?? `${Date.now().toString(36)}-${Math.random().toString(36).slice(2)}`;
 }
-function O(o) {
+function j(o) {
   const t = { ...o };
   return delete t.uuid, t;
 }
@@ -1063,16 +1115,16 @@ export {
   k as DbBase,
   T as DbCore,
   A as DbSync,
-  P as DbTable,
-  q as FetchSyncTransport,
+  L as DbTable,
+  H as FetchSyncTransport,
   w as IndexedDbBackend,
   T as MyDB,
   A as MySyncDB,
   _ as _dbObj,
   g as dbModelColumn,
-  F as dbModelEvent,
+  W as dbModelEvent,
   y as dbModelIndex,
-  N as dbModelIndexType,
+  x as dbModelIndexType,
   S as dbModelTransformation,
-  $ as dbObj
+  F as dbObj
 };

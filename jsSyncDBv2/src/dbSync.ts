@@ -17,6 +17,16 @@ import {
 
 export type SyncResult = number | SyncEvent[];
 export type SyncCallback<T = SyncResult> = (result: T | -1) => void;
+type SyncLifecycleContext = {
+  id: string;
+  operation: 'sync' | 'upload' | 'download' | 'restore';
+  source: 'manual' | 'auto';
+};
+export type SyncLifecycleEvent =
+  | (SyncLifecycleContext & { phase: 'start' })
+  | (SyncLifecycleContext & { phase: 'end'; result: SyncResult; error?: never })
+  | (SyncLifecycleContext & { phase: 'end'; error: unknown; result?: never });
+export type SyncLifecycleListener = (event: SyncLifecycleEvent) => void;
 
 export type SyncEvent = DbModelObject & {
   isDelete: number;
@@ -65,6 +75,8 @@ export class DbSync {
   private autoUploadBusy = false;
   private autoRestoreBusy = false;
   private autoDownloadBusy = false;
+  private readonly syncLifecycleListeners = new Set<SyncLifecycleListener>();
+  private syncOperationSequence = 0;
 
   constructor(
     code: string,
@@ -159,30 +171,26 @@ export class DbSync {
   }
 
   async restore(callback?: SyncCallback<number>): Promise<number> {
-    if (this.restoreBusy) return this.withCallback(Promise.resolve(-2), callback);
-    this.restoreBusy = true;
-    const operation = this.restoreCore();
-    return this.withCallback(operation.finally(() => { this.restoreBusy = false; }), callback);
+    return this.restoreWithSource(callback, 'manual');
   }
 
   async upload(callback?: SyncCallback<number>): Promise<number> {
-    if (this.uploadBusy || this.restoreBusy) return this.withCallback(Promise.resolve(-3), callback);
-    this.uploadBusy = true;
-    const operation = this.uploadCore();
-    return this.withCallback(operation.finally(() => { this.uploadBusy = false; }), callback);
+    return this.uploadWithSource(callback, 'manual');
   }
 
   async download(callback?: SyncCallback<SyncResult>): Promise<SyncResult> {
-    if (this.downloadBusy || this.restoreBusy) return this.withCallback(Promise.resolve(-2), callback);
-    this.downloadBusy = true;
-    const operation = this.downloadCore();
-    return this.withCallback(operation.finally(() => { this.downloadBusy = false; }), callback);
+    return this.downloadWithSource(callback, 'manual');
   }
 
   async sync(callback?: SyncCallback<SyncResult>): Promise<SyncResult> {
     this.isWait = -1;
-    const operation = this.syncCore();
+    const operation = this.runTrackedOperation('sync', 'manual', () => this.syncCore());
     return this.withCallback(operation, callback);
+  }
+
+  onSyncEvent(listener: SyncLifecycleListener): () => void {
+    this.syncLifecycleListeners.add(listener);
+    return () => { this.syncLifecycleListeners.delete(listener); };
   }
 
   autoSync(callback: SyncCallback<SyncResult>, reconnectionInterval = 30): void {
@@ -448,12 +456,90 @@ export class DbSync {
 
   private async syncCore(): Promise<SyncResult> {
     if (this.restoreSeek() >= 0) {
-      const restoreStatus = await this.restore();
+      const restoreStatus = await this.executeRestore();
       if (restoreStatus !== 1) return restoreStatus;
     }
-    const uploadStatus = await this.upload();
+    const uploadStatus = await this.executeUpload();
     if (uploadStatus !== 1) return -9;
-    return this.download();
+    return this.executeDownload();
+  }
+
+  private async restoreWithSource(callback: SyncCallback<number> | undefined, source: 'manual' | 'auto'): Promise<number> {
+    if (this.restoreBusy) return this.withCallback(Promise.resolve(-2), callback);
+    const operation = this.runTrackedOperation('restore', source, () => this.executeRestore());
+    return this.withCallback(operation, callback);
+  }
+
+  private async uploadWithSource(callback: SyncCallback<number> | undefined, source: 'manual' | 'auto'): Promise<number> {
+    if (this.uploadBusy || this.restoreBusy) return this.withCallback(Promise.resolve(-3), callback);
+    const operation = this.runTrackedOperation('upload', source, () => this.executeUpload());
+    return this.withCallback(operation, callback);
+  }
+
+  private async downloadWithSource(
+    callback: SyncCallback<SyncResult> | undefined,
+    source: 'manual' | 'auto'
+  ): Promise<SyncResult> {
+    if (this.downloadBusy || this.restoreBusy) return this.withCallback(Promise.resolve(-2), callback);
+    const operation = this.runTrackedOperation('download', source, () => this.executeDownload());
+    return this.withCallback(operation, callback);
+  }
+
+  private async executeRestore(): Promise<number> {
+    if (this.restoreBusy) return -2;
+    this.restoreBusy = true;
+    try {
+      return await this.restoreCore();
+    } finally {
+      this.restoreBusy = false;
+    }
+  }
+
+  private async executeUpload(): Promise<number> {
+    if (this.uploadBusy || this.restoreBusy) return -3;
+    this.uploadBusy = true;
+    try {
+      return await this.uploadCore();
+    } finally {
+      this.uploadBusy = false;
+    }
+  }
+
+  private async executeDownload(): Promise<SyncResult> {
+    if (this.downloadBusy || this.restoreBusy) return -2;
+    this.downloadBusy = true;
+    try {
+      return await this.downloadCore();
+    } finally {
+      this.downloadBusy = false;
+    }
+  }
+
+  private async runTrackedOperation<T extends SyncResult>(
+    operation: SyncLifecycleEvent['operation'],
+    source: SyncLifecycleEvent['source'],
+    action: () => Promise<T>
+  ): Promise<T> {
+    const id = String(++this.syncOperationSequence);
+    this.emitSyncEvent({ phase: 'start', id, operation, source });
+    try {
+      const result = await action();
+      this.emitSyncEvent({ phase: 'end', id, operation, source, result });
+      return result;
+    } catch (error) {
+      this.emitSyncEvent({ phase: 'end', id, operation, source, error });
+      throw error;
+    }
+  }
+
+  private emitSyncEvent(event: SyncLifecycleEvent): void {
+    for (const listener of [...this.syncLifecycleListeners]) {
+      try {
+        listener(event);
+      } catch (error) {
+        console.error('Sync lifecycle listener failed.', error);
+      }
+    }
   }
 
   private autoSocketTick(callback: SyncCallback<SyncResult>, reconnectionInterval: number): void {
@@ -504,10 +590,10 @@ export class DbSync {
         socket.close();
         return;
       }
-      void this.download(callback);
+      void this.downloadWithSource(callback, 'auto');
     };
     socket.onmessage = (event: MessageEvent) => {
-      if (this.autoSocket === socket && event.data === '1') void this.download(callback);
+      if (this.autoSocket === socket && event.data === '1') void this.downloadWithSource(callback, 'auto');
     };
     socket.onclose = () => {
       if (this.autoSocket === socket) this.autoSocket = null;
@@ -529,7 +615,7 @@ export class DbSync {
     if (this.hasNewData && !this.autoUploadBusy) void this.runAutoUpload();
     if (this.autoDownloadBusy) return;
     this.autoDownloadBusy = true;
-    void this.download(callback)
+    void this.downloadWithSource(callback, 'auto')
       .then((result) => {
         if (result === -9) this.autoRetrySeconds = 30;
       })
@@ -540,7 +626,7 @@ export class DbSync {
     if (this.autoRestoreBusy) return;
     this.autoRestoreBusy = true;
     try {
-      const status = await this.restore();
+      const status = await this.restoreWithSource(undefined, 'auto');
       if (status === -9) this.autoRetrySeconds = 30;
     } finally {
       this.autoRestoreBusy = false;
@@ -551,7 +637,7 @@ export class DbSync {
     if (this.autoUploadBusy) return;
     this.autoUploadBusy = true;
     try {
-      const status = await this.upload();
+      const status = await this.uploadWithSource(undefined, 'auto');
       if (status === -9) this.autoRetrySeconds = 30;
     } finally {
       this.autoUploadBusy = false;

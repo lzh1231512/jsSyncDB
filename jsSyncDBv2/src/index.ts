@@ -19,7 +19,14 @@ export {
 } from './dbModel';
 export type { DbModelEvent, DbModelObject, DbModelTransformation } from './dbModel';
 export { DbSync, MySyncDB } from './dbSync';
-export type { DbSyncOptions, SyncCallback, SyncEvent, SyncResult } from './dbSync';
+export type {
+	DbSyncOptions,
+	SyncCallback,
+	SyncEvent,
+	SyncLifecycleEvent,
+	SyncLifecycleListener,
+	SyncResult
+} from './dbSync';
 export { FetchSyncTransport } from './syncTransport';
 export type {
 	SyncDownloadRequest,

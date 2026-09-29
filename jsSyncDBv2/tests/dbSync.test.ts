@@ -7,6 +7,7 @@ import {
   dbModelColumn,
   type SyncDownloadRequest,
   type SyncDownloadResponse,
+  type SyncLifecycleEvent,
   type SyncTransport,
   type SyncUploadRequest,
   type SyncUploadResponse
@@ -141,6 +142,27 @@ describe('DbSync with an injected transport', () => {
     await expect(sync.dbRead('mainSync.Temp')).resolves.toEqual([]);
   });
 
+  it('emits one paired manual lifecycle event for sync, including a negative result', async () => {
+    const transport = new FakeSyncTransport();
+    const table = `lifecycle-${sequence + 1}`;
+    const sync = createSync(table, transport);
+    transport.downloadResults.push({ status: -7 });
+    const events: SyncLifecycleEvent[] = [];
+    sync.onSyncEvent((event) => { events.push(event); });
+
+    await expect(sync.sync()).resolves.toBe(-7);
+
+    expect(events).toHaveLength(2);
+    expect(events[0]).toMatchObject({ phase: 'start', operation: 'sync', source: 'manual' });
+    expect(events[1]).toMatchObject({
+      phase: 'end',
+      id: events[0]!.id,
+      operation: 'sync',
+      source: 'manual',
+      result: -7
+    });
+  });
+
   it('applies remote pages in order and prunes superseded sync history IDs', async () => {
     const transport = new FakeSyncTransport();
     const table = `pages-${sequence + 1}`;
@@ -265,11 +287,22 @@ describe('DbSync with an injected transport', () => {
     const table = `poll-${sequence + 1}`;
     const sync = createSync(table, transport);
     const callbacks: Array<number | unknown[]> = [];
+    const lifecycle: SyncLifecycleEvent[] = [];
+    sync.onSyncEvent((event) => { lifecycle.push(event); });
 
     sync.autoSync((result) => { callbacks.push(result as number | unknown[]); });
     await vi.advanceTimersByTimeAsync(1000);
     expect(transport.downloads).toHaveLength(1);
     expect(transport.downloads[0]!.request.isWait).toBe(0);
+    expect(lifecycle).toHaveLength(2);
+    expect(lifecycle[0]).toMatchObject({ phase: 'start', operation: 'download', source: 'auto' });
+    expect(lifecycle[1]).toMatchObject({
+      phase: 'end',
+      id: lifecycle[0]!.id,
+      operation: 'download',
+      source: 'auto',
+      result: 1
+    });
 
     await vi.advanceTimersByTimeAsync(1000);
     expect(transport.downloads).toHaveLength(2);
