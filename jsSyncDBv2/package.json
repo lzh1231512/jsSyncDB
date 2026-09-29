@@ -1,0 +1,23 @@
+{
+  "name": "jssyncdb-v2",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "vite build && vite build --config viteLegacy.config.ts",
+    "test": "vitest run tests",
+    "test:bundle": "vitest run bundleCheck/legacyBundle.test.ts",
+    "test:integration": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/runIntegration.ps1",
+    "test:integration:client": "vitest run --config viteIntegration.config.ts",
+    "test:watch": "vitest",
+    "typecheck": "tsc --noEmit",
+    "check": "npm run typecheck && npm test && npm run build && npm run test:bundle"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.0",
+    "fake-indexeddb": "^6.2.4",
+    "typescript": "^5.9.2",
+    "vite": "^7.1.7",
+    "vitest": "^3.2.4"
+  }
+}

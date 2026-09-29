@@ -1,0 +1,38 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "jsSyncDBv2: typecheck",
+      "type": "shell",
+      "command": "npm",
+      "args": ["run", "typecheck"],
+      "options": {
+        "cwd": "${workspaceFolder}/jsSyncDBv2"
+      },
+      "problemMatcher": "$tsc",
+      "group": "build"
+    },
+    {
+      "label": "jsSyncDBv2: test",
+      "type": "shell",
+      "command": "npm",
+      "args": ["test"],
+      "options": {
+        "cwd": "${workspaceFolder}/jsSyncDBv2"
+      },
+      "problemMatcher": [],
+      "group": "test"
+    },
+    {
+      "label": "jsSyncDBv2: build",
+      "type": "shell",
+      "command": "npm",
+      "args": ["run", "build"],
+      "options": {
+        "cwd": "${workspaceFolder}/jsSyncDBv2"
+      },
+      "problemMatcher": [],
+      "group": "build"
+    }
+  ]
+}
